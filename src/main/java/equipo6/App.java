@@ -6,6 +6,7 @@ import java.io.*;
 
 public class App {
     private JButton buttonCreate;
+    private JButton buttonLoad;
     private JButton buttonValidate;
     private JTextArea textAreaInput;
     private JTextArea textAreaResult;
@@ -41,16 +42,22 @@ public class App {
 
         // Inicializar botones
         buttonCreate = new JButton("Crear Archivo");
+        buttonLoad = new JButton("Cargar Archivo");
         buttonValidate = new JButton("Validar Archivo");
         // Reubicar los botones en la parte inferior derecha
-        buttonCreate.setBounds(770, 360, 150, 30);
-        buttonValidate.setBounds(930, 360, 150, 30);
+        buttonCreate.setBounds(450, 360, 150, 30);
+        buttonLoad.setBounds(610, 360, 150, 30);
+        buttonValidate.setBounds(770, 360, 150, 30);
 
         // Agregar ActionListeners a los botones
         buttonCreate.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 crearArchivo();
             }
+        });
+
+        buttonLoad.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {cargarArchivo();}
         });
 
         buttonValidate.addActionListener(new ActionListener() {
@@ -76,6 +83,7 @@ public class App {
         frame.add(labelInput);
         frame.add(labelResult);
         frame.add(buttonCreate);
+        frame.add(buttonLoad);
         frame.add(buttonValidate);
 
         frame.setSize(1050, 450);  // Agrandé la ventana
@@ -99,6 +107,28 @@ public class App {
             throw new RuntimeException(e);
         }
 
+    }
+
+    private void cargarArchivo(){
+        File file = new File("src\\main\\java\\equipo6\\prueba.txt");
+
+        try {
+            if (file.exists()) {
+                FileReader reader = new FileReader(file);
+                BufferedReader bf = new BufferedReader(reader);
+                textAreaInput.setText("");
+                String cadena = bf.readLine();
+                while(cadena != null) {
+                    textAreaInput.setText(textAreaInput.getText() + cadena + "\n");
+                    cadena = bf.readLine();
+                }
+                bf.close();
+                reader.close();
+            }
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private void validarArchivo() {
