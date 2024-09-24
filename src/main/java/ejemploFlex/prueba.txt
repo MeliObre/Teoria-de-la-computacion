@@ -1,0 +1,27 @@
+DECLARE.SECTION
+    x INT
+    y FLOAT
+    message STRING
+
+ENDDECLARE.SECTION
+
+PROGRAM.SECTION
+    BEGIN
+        x := 10
+        y := 20.5
+        
+//* Comentario *//
+        IF x > y THEN
+            message := "x es mayor que y"
+        ELSE
+            message := "y es mayor que x"
+        END
+
+        WHILE y > 0 DO
+            y := y - 1
+            WRITE "Valor de y: " + y
+        END
+        
+        WRITE message
+    END
+ENDPROGRAM.SECTION

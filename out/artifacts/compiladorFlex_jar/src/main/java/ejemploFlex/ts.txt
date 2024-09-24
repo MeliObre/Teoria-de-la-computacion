@@ -1,0 +1,3 @@
+NOMBRE        TOKEN        TIPO        VALOR        LONG        
+Type es:ASIG_TIPO lexeme es:::=
+Type es:CTE_STR lexeme es: HOlaMundo

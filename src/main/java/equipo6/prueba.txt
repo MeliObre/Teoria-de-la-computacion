@@ -1,0 +1,17 @@
+PROGRAM.SECTION
+
+INT contador ::= 0
+
+WHILE ( contador <10  ) DO
+DECLARE.SECTION
+
+contador := contador + 1
+
+ENDDECLARE.SECTION
+
+IF (contador == 10 ) THEN
+DECLARE.SECTION
+WRITE contador
+ENDDECLARE.SECTION
+
+ENDPROGRAM.SECTION
