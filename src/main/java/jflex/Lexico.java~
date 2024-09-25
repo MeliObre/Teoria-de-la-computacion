@@ -723,7 +723,7 @@ public class Lexico {
       else {
         switch (zzAction < 0 ? zzAction : ZZ_ACTION[zzAction]) {
           case 1: 
-            { throw new Error("Caracter no permitido: <" + yytext() + "> en la linea " + yyline+1);
+            { throw new Error("Caracter no permitido: <" + yytext() + "> en la linea" + yyline);
             } 
             // fall through
           case 44: break;

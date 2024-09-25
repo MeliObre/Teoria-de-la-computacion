@@ -11,7 +11,7 @@ public class Token  {
 
     @Override
     public String toString() {
-        return "Type es:"+type+" lexeme es:"+lexeme;
+        return " Token "+ type +" encontrado, Lexema "+ lexeme;
     }
 
     public TokenConstants getType() {

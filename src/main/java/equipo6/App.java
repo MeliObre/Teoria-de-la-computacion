@@ -7,6 +7,8 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
 
+import static equipo6.TokenConstants.*;
+
 public class App extends Component {
     private JButton buttonLoad;
     private JButton buttonValidate;
@@ -140,47 +142,72 @@ public class App extends Component {
             Lexico lexer = new jflex.Lexico(reader);
             Token token = null;
             textAreaResult.setText("");
+
             try {
                 token = lexer.yylex();
             } catch (ErrorEnt e) {
-                textAreaResult.append("error rango entero\n");//provisional
+                textAreaResult.append(" Error rango entero\n");//provisional
                 token = new Token(TokenConstants.ERROR, "");
             } catch (ErrorReal e) {
-                textAreaResult.append("error rango real\n");//provisional
+                textAreaResult.append(" Error rango real\n");//provisional
                 token = new Token(TokenConstants.ERROR, "");
-            } catch (Error e) { //Error por caracter no valido
+            } catch (Error e) {
                 textAreaResult.append(e.getMessage() + "\n");
+                token = new Token(TokenConstants.ERROR, "");
             }
 
             File file = new File("src\\main\\java\\ejemploFlex\\ts.txt");
             FileWriter writer = new FileWriter(file);
-            textAreaResult.append("NOMBRE        "+"TOKEN        "+"TIPO        "+"VALOR        "+"LONG        \n");
-            writer.write("NOMBRE        "+"TOKEN        "+"TIPO        "+"VALOR        "+"LONG        \n");
-                while (token.getType() != TokenConstants.EOF) {
-                    try {
-                        if (token.getType() != TokenConstants.ERROR) {
-                            writer.write(token.toString() + "\n");
-                            textAreaResult.append(token.toString() + "\n");
+            writer.write("NOMBRE TOKEN TIPO VALOR LONGITUD\n");
+            while (token.getType() != TokenConstants.EOF) {
+                try {
+                    if ((token.getType() != TokenConstants.ERROR)){
+                        textAreaResult.append(token.toString() + "\n");
+                        if (token.getType() == ID && !isRepetido(file,token.getLexeme())){
+                            writer.write(token.getLexeme() + " " + token.getType() + " -  - - " + "\n");
                         }
-                        token = lexer.yylex();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    } catch (ErrorEnt e) {
-                        textAreaResult.append("error rango entero\n");//provisional
-                        token = new Token(TokenConstants.ERROR, "");
-                    } catch (ErrorReal e) {
-                        textAreaResult.append("error rango real\n");//provisional
-                        token = new Token(TokenConstants.ERROR, "");
+                        if(token.getType() == CTE_REA || token.getType() == CTE_ENT || token.getType() == CTE_BIN){
+                            writer.write("_" + token.getLexeme() + " " + token.getType() + " - " + token.getLexeme() +  " - " + "\n");
+                        }
+                        if (token.getType() == CTE_STR){
+                            writer.write("_" + token.getLexeme().replaceAll("\"", "") + " " +
+                                    token.getType() + " - " + token.getLexeme().replaceAll("\"", "") +  " " + (token.getLexeme().length()-2) + "\n");
+                        }
                     }
+                    token = lexer.yylex();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (ErrorEnt e) {
+                    textAreaResult.append(" Error rango entero\n");//provisional
+                    token = new Token(TokenConstants.ERROR, "");
+                } catch (ErrorReal e) {
+                    textAreaResult.append(" Error rango real\n");//provisional
+                    token = new Token(TokenConstants.ERROR, "");
+                } catch (Error e) {
+                    textAreaResult.append(e.getMessage() + "\n");
+                    token = new Token(TokenConstants.ERROR, "");
                 }
+            }
             reader.close();
             writer.close();
         } catch (IOException e) {e.printStackTrace();}
     }
 
+    private boolean isRepetido(File file, String lexema){
 
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                if (line.contains(lexema)) {
+                    return true;
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 
-    // Métodos crearArchivo y validarArchivo (sin cambios)...
 
     public static void main(String[] args) {
         //App dialog;
