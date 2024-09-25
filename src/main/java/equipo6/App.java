@@ -148,6 +148,8 @@ public class App extends Component {
             } catch (ErrorReal e) {
                 textAreaResult.append("error rango real\n");//provisional
                 token = new Token(TokenConstants.ERROR, "");
+            } catch (Error e) { //Error por caracter no valido
+                textAreaResult.append(e.getMessage() + "\n");
             }
 
             File file = new File("src\\main\\java\\ejemploFlex\\ts.txt");
