@@ -11,6 +11,8 @@ import java_cup.runtime.*;
 %column
 %char
 %type Token
+%throws ErrorEnt
+%throws ErrorReal
 
 
 LETRA= [a-zA-Z]
@@ -67,10 +69,34 @@ CTE_STR = \" (({LETRA} | {DIGITOS}|[^\"]))*\"
     "CHAR" {return new Token(TokenConstants.ASIG_CHAR, yytext());}
     "," {return new Token(TokenConstants.COMA, yytext());}
     {ID} {return new Token(TokenConstants.ID, yytext());}
-    {CTE_ENT} {return new Token(TokenConstants.CTE_ENT, yytext());}
+    {CTE_ENT} {Token token =  new Token(TokenConstants.CTE_ENT, yytext());
+        try {
+                    short valorShort = Short.parseShort(yytext());
+                    return token;
+                    //System.out.println("El valor " + valorShort + " está dentro del rango de short.");
+                } catch (NumberFormatException e) {
+                    throw new ErrorEnt();
+                }
+
+    }
     {COMENTARIO} {/* NADA NADA NADA*/}
     {ESPACIO} {/* NADA NADA NADA*/}
-    {CTE_REA} {return new Token(TokenConstants.CTE_REA, yytext());}
+    {CTE_REA} {Token token = new Token(TokenConstants.CTE_REA, yytext());
+        try {
+                    float valorFloat = Float.parseFloat(yytext());
+                    // Validar si está dentro del rango de float
+                    if (valorFloat >= -Float.MAX_VALUE && valorFloat <= Float.MAX_VALUE && !Float.isNaN(valorFloat) && !Float.isInfinite(valorFloat)) {
+                        return token;
+                        //System.out.println("El valor " + valorFloat + " está dentro del rango de float.");
+                    } else {
+                        throw new ErrorReal();
+                        //System.out.println("El valor " + textoReal + " está fuera del rango de float.");
+                    }
+                } catch (NumberFormatException e) {
+                    throw new ErrorReal();
+                    //System.out.println("El valor " + textoReal + " no es un número válido.");
+                }
+    }
     {CTE_BIN} {return new Token(TokenConstants.CTE_BIN, yytext());}
     {CTE_STR} {return new Token(TokenConstants.CTE_STR, yytext());}
   }

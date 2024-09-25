@@ -1,4 +1,6 @@
 package equipo6;
+import jflex.ErrorEnt;
+import jflex.ErrorReal;
 import jflex.Lexico;
 import javax.swing.*;
 import java.awt.event.*;
@@ -136,21 +138,39 @@ public class App {
             String filePath = "src\\main\\java\\ejemploFlex\\prueba.txt";
             BufferedReader reader = new BufferedReader(new FileReader(filePath));
             Lexico lexer = new jflex.Lexico(reader);
+            Token token = null;
             textAreaResult.setText("");
-            Token token = lexer.yylex();
+            try {
+                token = lexer.yylex();
+            } catch (ErrorEnt e) {
+                textAreaResult.append("error rango entero\n");//provisional
+                token = new Token(TokenConstants.ERROR, "");
+            } catch (ErrorReal e) {
+                textAreaResult.append("error rango real\n");//provisional
+                token = new Token(TokenConstants.ERROR, "");
+            }
+
             File file = new File("src\\main\\java\\ejemploFlex\\ts.txt");
             FileWriter writer = new FileWriter(file);
             textAreaResult.append("NOMBRE        "+"TOKEN        "+"TIPO        "+"VALOR        "+"LONG        \n");
             writer.write("NOMBRE        "+"TOKEN        "+"TIPO        "+"VALOR        "+"LONG        \n");
-            while (token.getType() != TokenConstants.EOF) {
-                try {
-                    writer.write(token.toString()+"\n");
-                    textAreaResult.append(token.toString()+"\n");
-                    token = lexer.yylex();
-                } catch (IOException e) {
-                    e.printStackTrace();
+                while (token.getType() != TokenConstants.EOF) {
+                    try {
+                        if (token.getType() != TokenConstants.ERROR) {
+                            writer.write(token.toString() + "\n");
+                            textAreaResult.append(token.toString() + "\n");
+                        }
+                        token = lexer.yylex();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (ErrorEnt e) {
+                        textAreaResult.append("error rango entero\n");//provisional
+                        token = new Token(TokenConstants.ERROR, "");
+                    } catch (ErrorReal e) {
+                        textAreaResult.append("error rango real\n");//provisional
+                        token = new Token(TokenConstants.ERROR, "");
+                    }
                 }
-            }
             reader.close();
             writer.close();
         } catch (IOException e) {e.printStackTrace();}
