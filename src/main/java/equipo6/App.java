@@ -3,11 +3,11 @@ import jflex.ErrorEnt;
 import jflex.ErrorReal;
 import jflex.Lexico;
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
 
-public class App {
-    private JButton buttonCreate;
+public class App extends Component {
     private JButton buttonLoad;
     private JButton buttonValidate;
     private JTextArea textAreaInput;
@@ -43,21 +43,13 @@ public class App {
         labelResult.setBounds(520, 10, 100, 25);
 
         // Inicializar botones
-        buttonCreate = new JButton("Crear Archivo");
         buttonLoad = new JButton("Cargar Archivo");
-        buttonValidate = new JButton("Validar Archivo");
+        buttonValidate = new JButton("Analisis léxico");
         // Reubicar los botones en la parte inferior derecha
-        buttonCreate.setBounds(450, 360, 150, 30);
         buttonLoad.setBounds(610, 360, 150, 30);
         buttonValidate.setBounds(770, 360, 150, 30);
 
         // Agregar ActionListeners a los botones
-        buttonCreate.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                crearArchivo();
-            }
-        });
-
         buttonLoad.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {cargarArchivo();}
         });
@@ -84,7 +76,6 @@ public class App {
         frame.add(scrollResult);
         frame.add(labelInput);
         frame.add(labelResult);
-        frame.add(buttonCreate);
         frame.add(buttonLoad);
         frame.add(buttonValidate);
 
@@ -112,28 +103,37 @@ public class App {
     }
 
     private void cargarArchivo(){
-        File file = new File("src\\main\\java\\equipo6\\prueba.txt");
-
-        try {
-            if (file.exists()) {
-                FileReader reader = new FileReader(file);
-                BufferedReader bf = new BufferedReader(reader);
-                textAreaInput.setText("");
-                String cadena = bf.readLine();
-                while(cadena != null) {
-                    textAreaInput.setText(textAreaInput.getText() + cadena + "\n");
-                    cadena = bf.readLine();
+        try{
+            JFileChooser selectorArchivo = new JFileChooser();
+            selectorArchivo.showOpenDialog(this);
+            File file = selectorArchivo.getSelectedFile(); /* abre el archivo seleccionado*/
+            if(file!=null){ /*recorre el archivo */
+                if (file.getName().endsWith(".txt")){
+                    FileReader reader = new FileReader(file);
+                    BufferedReader bf=new BufferedReader(reader);
+                    textAreaInput.setText("");
+                    String cadena = bf.readLine();
+                    while(cadena != null){
+                        textAreaInput.setText(textAreaInput.getText() + cadena + "\n");
+                        cadena = bf.readLine();
+                    }
+                    bf.close();
+                    reader.close();
+                } else {
+                    JOptionPane.showMessageDialog(null,
+                            "Solo puede seleccionar achivos de texto",
+                            "ERROR",JOptionPane.ERROR_MESSAGE);
                 }
-                bf.close();
-                reader.close();
             }
-
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            JOptionPane.showMessageDialog(null,e+"" +
+                            "\nNo se ha encontrado el archivo",
+                    "ADVERTENCIA!!!",JOptionPane.WARNING_MESSAGE);
         }
     }
 
     private void validarArchivo() {
+        crearArchivo();
         try {
             String filePath = "src\\main\\java\\ejemploFlex\\prueba.txt";
             BufferedReader reader = new BufferedReader(new FileReader(filePath));
