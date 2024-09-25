@@ -100,5 +100,5 @@ CTE_STR = \" (({LETRA} | {DIGITOS}|[^\"]))*\"
     {CTE_BIN} {return new Token(TokenConstants.CTE_BIN, yytext());}
     {CTE_STR} {return new Token(TokenConstants.CTE_STR, yytext());}
   }
-  [^] {throw new Error("Caracter no permitido: <" + yytext() + "> en la linea" + yyline);}
+  [^] {throw new Error("Caracter no permitido: <" + yytext() + "> en la linea" + yyline());}
 

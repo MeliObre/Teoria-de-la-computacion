@@ -1,6 +1,0 @@
-NOMBRE        TOKEN        TIPO        VALOR        LONG        
-Type es:ID lexeme es:holaaaaaaaaaaa
-Type es:ID lexeme es:teo1
-Type es:ASIG_VAR lexeme es::=
-Type es:ASIG_TIPO lexeme es:::=
-Type es:CTE_STR lexeme es:"Que tal"
