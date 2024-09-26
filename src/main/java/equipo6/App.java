@@ -12,6 +12,7 @@ import static equipo6.TokenConstants.*;
 public class App extends Component {
     private JButton buttonLoad;
     private JButton buttonValidate;
+    private JButton buttonTable;
     private JTextArea textAreaInput;
     private JTextArea textAreaResult;
     public JFrame frame;
@@ -47,9 +48,11 @@ public class App extends Component {
         // Inicializar botones
         buttonLoad = new JButton("Cargar Archivo");
         buttonValidate = new JButton("Analisis léxico");
+        buttonTable = new JButton("Tabla de simbolos");
         // Reubicar los botones en la parte inferior derecha
-        buttonLoad.setBounds(610, 360, 150, 30);
-        buttonValidate.setBounds(770, 360, 150, 30);
+        buttonLoad.setBounds(450, 360, 150, 30);
+        buttonValidate.setBounds(610, 360, 150, 30);
+        buttonTable.setBounds(770, 360, 150, 30);
 
         // Agregar ActionListeners a los botones
         buttonLoad.addActionListener(new ActionListener() {
@@ -60,6 +63,10 @@ public class App extends Component {
             public void actionPerformed(ActionEvent e) {
                 validarArchivo();
             }
+        });
+
+        buttonTable.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {mostrarTabla();}
         });
 
         // Manejar el cierre de la ventana
@@ -80,7 +87,7 @@ public class App extends Component {
         frame.add(labelResult);
         frame.add(buttonLoad);
         frame.add(buttonValidate);
-
+        frame.add(buttonTable);
         frame.setSize(1050, 450);  // Agrandé la ventana
         frame.setLocationRelativeTo(null); // Centrar la ventana
     }
@@ -208,7 +215,9 @@ public class App extends Component {
         return false;
     }
 
+    private void mostrarTabla(){
 
+    }
     public static void main(String[] args) {
         //App dialog;
 
