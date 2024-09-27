@@ -3,9 +3,11 @@ import jflex.ErrorEnt;
 import jflex.ErrorReal;
 import jflex.Lexico;
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
+import java.util.ArrayList;
 
 import static equipo6.TokenConstants.*;
 
@@ -16,6 +18,7 @@ public class App extends Component {
     private JTextArea textAreaInput;
     private JTextArea textAreaResult;
     public JFrame frame;
+    private TablaSimbolos listaTabla = new TablaSimbolos();
 
     public App() throws FileNotFoundException {
         frame = new JFrame();
@@ -66,7 +69,9 @@ public class App extends Component {
         });
 
         buttonTable.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {mostrarTabla();}
+            public void actionPerformed(ActionEvent e) {mostrarTabla();
+            buttonTable.setEnabled(false);
+            }
         });
 
         // Manejar el cierre de la ventana
@@ -88,6 +93,7 @@ public class App extends Component {
         frame.add(buttonLoad);
         frame.add(buttonValidate);
         frame.add(buttonTable);
+        buttonTable.setEnabled(false);
         frame.setSize(1050, 450);  // Agrandé la ventana
         frame.setLocationRelativeTo(null); // Centrar la ventana
     }
@@ -152,71 +158,94 @@ public class App extends Component {
 
             try {
                 token = lexer.yylex();
-            } catch (ErrorEnt e) {
-                textAreaResult.append(" Error rango entero\n");//provisional
-                token = new Token(TokenConstants.ERROR, "");
-            } catch (ErrorReal e) {
-                textAreaResult.append(" Error rango real\n");//provisional
-                token = new Token(TokenConstants.ERROR, "");
-            } catch (Error e) {
+            } catch (ErrorEnt | ErrorReal | Error e) {
                 textAreaResult.append(e.getMessage() + "\n");
                 token = new Token(TokenConstants.ERROR, "");
             }
 
             File file = new File("src\\main\\java\\ejemploFlex\\ts.txt");
             FileWriter writer = new FileWriter(file);
+            ArrayList<String> lista = new ArrayList<>();
+            ArrayList<String> listaId = new ArrayList<>();
             writer.write("NOMBRE TOKEN TIPO VALOR LONGITUD\n");
             while (token.getType() != TokenConstants.EOF) {
                 try {
                     if ((token.getType() != TokenConstants.ERROR)){
                         textAreaResult.append(token.toString() + "\n");
-                        if (token.getType() == ID && !isRepetido(file,token.getLexeme())){
+                        if (token.getType() == ID && !isRepetido(listaId,token.getLexeme())){
                             writer.write(token.getLexeme() + " " + token.getType() + " -  - - " + "\n");
+                            lista.add(token.getLexeme());
+                            lista.add(token.getType().toString());
+                            lista.add("-");
+                            lista.add("-");
+                            lista.add("-");
+                            listaId.add(token.getLexeme());
                         }
                         if(token.getType() == CTE_REA || token.getType() == CTE_ENT || token.getType() == CTE_BIN){
                             writer.write("_" + token.getLexeme() + " " + token.getType() + " - " + token.getLexeme() +  " - " + "\n");
+                            lista.add("_" + token.getLexeme());
+                            lista.add(token.getType().toString());
+                            lista.add("-");
+                            lista.add(token.getLexeme());
+                            lista.add("-");
                         }
                         if (token.getType() == CTE_STR){
                             writer.write("_" + token.getLexeme().replaceAll("\"", "") + " " +
                                     token.getType() + " - " + token.getLexeme().replaceAll("\"", "") +  " " + (token.getLexeme().length()-2) + "\n");
+                            lista.add("_" + token.getLexeme().replaceAll("\"", ""));
+                            lista.add(token.getType().toString());
+                            lista.add("-");
+                            lista.add(token.getLexeme().replaceAll("\"", ""));
+                            int lenght = (token.getLexeme().length()-2);
+                            lista.add(Integer.toString(lenght));
                         }
                     }
                     token = lexer.yylex();
                 } catch (IOException e) {
                     e.printStackTrace();
-                } catch (ErrorEnt e) {
-                    textAreaResult.append(" Error rango entero\n");//provisional
-                    token = new Token(TokenConstants.ERROR, "");
-                } catch (ErrorReal e) {
-                    textAreaResult.append(" Error rango real\n");//provisional
-                    token = new Token(TokenConstants.ERROR, "");
-                } catch (Error e) {
+                } catch (ErrorEnt | ErrorReal | Error e) {
                     textAreaResult.append(e.getMessage() + "\n");
                     token = new Token(TokenConstants.ERROR, "");
                 }
             }
             reader.close();
             writer.close();
+            listaTabla.setLista(lista);
+            buttonTable.setEnabled(true);
         } catch (IOException e) {e.printStackTrace();}
     }
 
-    private boolean isRepetido(File file, String lexema){
-
-        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                if (line.contains(lexema)) {
-                    return true;
-                }
+    private boolean isRepetido(ArrayList<String> listaId, String lexema){
+        for (String id : listaId) {
+            if (id.equals(lexema)){
+                return true;
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
         return false;
     }
 
     private void mostrarTabla(){
+        JFrame frameTabla = new JFrame();
+        //se suma una fila para los encabezados
+        JTable tabla = new JTable(new DefaultTableModel(listaTabla.getNombreColumnas() , listaTabla.getFilaTamanio() + 1));
 
+        frameTabla.setSize(1100,500);
+        tabla.setSize(1100,500);
+        frameTabla.add(tabla);
+        frameTabla.setVisible(true);
+        tabla.setVisible(true);
+        frameTabla.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        //primero agrego los nombres de los encabezados
+        for (int i = 0; i < listaTabla.getColumnaTamanio(); i++) {
+            tabla.setValueAt(tabla.getColumnName(i),0,i);
+        }
+
+        //luego los valores de la tabla
+        for (int i = 0; i < listaTabla.getFilaTamanio(); i++) {
+            for (int j = 0; j < listaTabla.getColumnaTamanio(); j++) {
+                tabla.setValueAt(listaTabla.getValueAt(i,j), i + 1, j);
+            }
+        }
     }
     public static void main(String[] args) {
         //App dialog;

@@ -723,7 +723,7 @@ public class Lexico {
       else {
         switch (zzAction < 0 ? zzAction : ZZ_ACTION[zzAction]) {
           case 1: 
-            { throw new Error("Caracter no permitido: <" + yytext() + "> en la linea " + yyline+1);
+            { throw new Error("Caracter no permitido: <" + yytext() + "> en la linea " + (yyline+1));
             } 
             // fall through
           case 44: break;
@@ -737,9 +737,8 @@ public class Lexico {
         try {
                     short valorShort = Short.parseShort(yytext());
                     return token;
-                    //System.out.println("El valor " + valorShort + " está dentro del rango de short.");
                 } catch (NumberFormatException e) {
-                    throw new ErrorEnt();
+                    throw new ErrorEnt("Rango entero no permitido: <" + yytext() + "> en la linea " + (yyline+1));
                 }
             } 
             // fall through
@@ -811,14 +810,11 @@ public class Lexico {
                     // Validar si está dentro del rango de float
                     if (valorFloat >= -Float.MAX_VALUE && valorFloat <= Float.MAX_VALUE && !Float.isNaN(valorFloat) && !Float.isInfinite(valorFloat)) {
                         return token;
-                        //System.out.println("El valor " + valorFloat + " está dentro del rango de float.");
                     } else {
-                        throw new ErrorReal();
-                        //System.out.println("El valor " + textoReal + " está fuera del rango de float.");
+                        throw new ErrorReal("Rango real no permitido: <" + yytext() + "> en la linea " + (yyline+1));
                     }
                 } catch (NumberFormatException e) {
-                    throw new ErrorReal();
-                    //System.out.println("El valor " + textoReal + " no es un número válido.");
+                    throw new ErrorReal("Rango real no permitido: <" + yytext() + "> en la linea " + (yyline+1));
                 }
             } 
             // fall through
