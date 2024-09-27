@@ -61,7 +61,7 @@ CTE_STR = \" (({LETRA} | {DIGITOS}|[^\"]))*\"
     "OR" {return new Token(TokenConstants.OR, yytext());}
     "DECLARE.SECTION" {return new Token(TokenConstants.SEC_DEC, yytext());}
     "ENDDECLARE.SECTION" {return new Token(TokenConstants.SEC_END, yytext());}
-     "PROGRAM.SECTION" {return new Token(TokenConstants.SEC_PROG, yytext());}
+    "PROGRAM.SECTION" {return new Token(TokenConstants.SEC_PROG, yytext());}
     "ENDPROGRAM.SECTION" {return new Token(TokenConstants.SEC_ENDPROG, yytext());}
     "FLOAT" {return new Token(TokenConstants.ASIG_FL, yytext());}
     "INT" {return new Token(TokenConstants.ASIG_INT, yytext());}
