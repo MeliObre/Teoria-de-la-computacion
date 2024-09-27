@@ -69,8 +69,9 @@ public class App extends Component {
         });
 
         buttonTable.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {mostrarTabla();
-            buttonTable.setEnabled(false);
+            public void actionPerformed(ActionEvent e) {
+                mostrarTabla();
+                buttonTable.setEnabled(false);
             }
         });
 
@@ -99,7 +100,7 @@ public class App extends Component {
     }
 
     private void crearArchivo() {
-        File file = new File("src\\main\\java\\ejemploFlex\\prueba.txt");
+        File file = new File("src\\main\\java\\equipo6\\archivoActual.txt");
 
         try {
             if (!file.exists()) {
@@ -143,14 +144,14 @@ public class App extends Component {
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null,e+"" +
                             "\nNo se ha encontrado el archivo",
-                    "ADVERTENCIA!!!",JOptionPane.WARNING_MESSAGE);
+                    "Error",JOptionPane.ERROR_MESSAGE);
         }
     }
 
     private void validarArchivo() {
         crearArchivo();
         try {
-            String filePath = "src\\main\\java\\ejemploFlex\\prueba.txt";
+            String filePath = "src\\main\\java\\equipo6\\archivoActual.txt";
             BufferedReader reader = new BufferedReader(new FileReader(filePath));
             Lexico lexer = new jflex.Lexico(reader);
             Token token = null;
@@ -163,7 +164,7 @@ public class App extends Component {
                 token = new Token(TokenConstants.ERROR, "");
             }
 
-            File file = new File("src\\main\\java\\ejemploFlex\\ts.txt");
+            File file = new File("ts.txt");
             FileWriter writer = new FileWriter(file);
             ArrayList<String> lista = new ArrayList<>();
             ArrayList<String> listaId = new ArrayList<>();

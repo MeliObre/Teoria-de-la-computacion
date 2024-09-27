@@ -1,0 +1,4 @@
+NOMBRE TOKEN TIPO VALOR LONGITUD
+holaaaaaaaaaaa ID -  - - 
+teo1 ID -  - - 
+_Que tal CTE_STR - Que tal 7

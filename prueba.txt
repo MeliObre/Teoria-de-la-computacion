@@ -1,0 +1,29 @@
+PROGRAM.SECTION
+
+    DECLARE.SECTION
+        [contador, a1, b1, real] := [INT, INT, INT, FLOAT]
+        [cadena] := [STRING]
+    ENDDECLARE.SECTION
+
+
+    contador ::= 0
+    cadena ::= "Hola mundo"
+    real ::= 12.3
+    a1 ::= 20
+
+    //* Ciclo while *//
+    WHILE ( contador <10  ) DO
+    BEGIN
+        contador ::= contador + 1
+    END
+
+    //* Condicionales *//
+    IF (contador == 10 ) THEN
+        WRITE contador
+    ELSE
+        WRITE "Es distinto de 10"
+
+
+    b1 ::= 30 + PERCENT(100+a1,2*contador)
+
+ENDPROGRAM.SECTION
