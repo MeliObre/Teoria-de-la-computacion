@@ -227,24 +227,21 @@ public class App extends Component {
 
     private void mostrarTabla(){
         JFrame frameTabla = new JFrame();
+        frameTabla.setTitle("Tabla de Simbolos");
         //se suma una fila para los encabezados
         JTable tabla = new JTable(new DefaultTableModel(listaTabla.getNombreColumnas() , listaTabla.getFilaTamanio() + 1));
-
+        JScrollPane scrollTabla = new JScrollPane(tabla);
         frameTabla.setSize(1100,500);
         tabla.setSize(1100,500);
-        frameTabla.add(tabla);
+        frameTabla.add(scrollTabla);
         frameTabla.setVisible(true);
         tabla.setVisible(true);
         frameTabla.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        //primero agrego los nombres de los encabezados
-        for (int i = 0; i < listaTabla.getColumnaTamanio(); i++) {
-            tabla.setValueAt(tabla.getColumnName(i),0,i);
-        }
 
-        //luego los valores de la tabla
+        //agrego valores a la tabla grafica
         for (int i = 0; i < listaTabla.getFilaTamanio(); i++) {
             for (int j = 0; j < listaTabla.getColumnaTamanio(); j++) {
-                tabla.setValueAt(listaTabla.getValueAt(i,j), i + 1, j);
+                tabla.setValueAt(listaTabla.getValueAt(i,j), i, j);
             }
         }
     }
