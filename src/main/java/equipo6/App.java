@@ -164,7 +164,7 @@ public class App extends Component {
                 token = new Token(TokenConstants.ERROR, "");
             }
 
-            File file = new File("src\\main\\java\\equipo6\\ResultadoTabla.txt");
+            File file = new File("src\\main\\java\\equipo6\\resultadoTabla.txt");
             FileWriter writer = new FileWriter(file);
             ArrayList<String> lista = new ArrayList<>();
             ArrayList<String> listaId = new ArrayList<>();
