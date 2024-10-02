@@ -1,0 +1,26 @@
+NOMBRE TOKEN TIPO VALOR LONGITUD
+contador ID -  - - 
+a1 ID -  - - 
+b1 ID -  - - 
+real ID -  - - 
+cadena ID -  - - 
+bin ID -  - - 
+_0 CTE_ENT - 0 - 
+_Hola mundo CTE_STR - Hola mundo 10
+_12.3 CTE_REA - 12.3 - 
+_20 CTE_ENT - 20 - 
+_0b010101 CTE_BIN - 0b010101 - 
+_10 CTE_ENT - 10 - 
+_1 CTE_ENT - 1 - 
+_5 CTE_ENT - 5 - 
+_45 CTE_ENT - 45 - 
+_contador mayor o igual a 5 CTE_STR - contador mayor o igual a 5 26
+_4 CTE_ENT - 4 - 
+_30 CTE_ENT - 30 - 
+_contador mayor o igual a 5 CTE_STR - contador mayor o igual a 5 26
+_5 CTE_ENT - 5 - 
+_10 CTE_ENT - 10 - 
+_Es distinto de 10 CTE_STR - Es distinto de 10 17
+_30 CTE_ENT - 30 - 
+_100 CTE_ENT - 100 - 
+_2 CTE_ENT - 2 - 

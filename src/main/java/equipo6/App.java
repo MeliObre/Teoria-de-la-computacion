@@ -164,7 +164,7 @@ public class App extends Component {
                 token = new Token(TokenConstants.ERROR, "");
             }
 
-            File file = new File("ts.txt");
+            File file = new File("src\\main\\java\\equipo6\\ResultadoTabla.txt");
             FileWriter writer = new FileWriter(file);
             ArrayList<String> lista = new ArrayList<>();
             ArrayList<String> listaId = new ArrayList<>();
@@ -172,7 +172,7 @@ public class App extends Component {
             while (token.getType() != TokenConstants.EOF) {
                 try {
                     if ((token.getType() != TokenConstants.ERROR)){
-                        textAreaResult.append(token.toString() + "\n");
+                        textAreaResult.append(token.toString() + "\n"); //solo imprime el id en caso que este repetido
                         if (token.getType() == ID && !isRepetido(listaId,token.getLexeme())){
                             writer.write(token.getLexeme() + " " + token.getType() + " -  - - " + "\n");
                             lista.add(token.getLexeme());
