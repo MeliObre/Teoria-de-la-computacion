@@ -1,6 +1,5 @@
 PROGRAM.SECTION
     //*Codigo de prueba*//
-2222222222222222222222222222
 
     DECLARE.SECTION
         [contador, a1, b1, real] := [INT, INT, INT, FLOAT]
