@@ -1,6 +1,7 @@
 package equipo6;
 import jflex.ErrorEnt;
 import jflex.ErrorReal;
+import jflex.ErrorString;
 import jflex.Lexico;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -159,7 +160,7 @@ public class App extends Component {
 
             try {
                 token = lexer.yylex();
-            } catch (ErrorEnt | ErrorReal | Error e) {
+            } catch (ErrorEnt | ErrorReal | ErrorString | Error e) {
                 textAreaResult.append(e.getMessage() + "\n");
                 token = new Token(TokenConstants.ERROR, "");
             }
@@ -204,7 +205,7 @@ public class App extends Component {
                     token = lexer.yylex();
                 } catch (IOException e) {
                     e.printStackTrace();
-                } catch (ErrorEnt | ErrorReal | Error e) {
+                } catch (ErrorEnt | ErrorReal | ErrorString | Error e) {
                     textAreaResult.append(e.getMessage() + "\n");
                     token = new Token(TokenConstants.ERROR, "");
                 }

@@ -18,7 +18,7 @@ import java_cup.runtime.*;
 LETRA= [a-zA-Z]
 DIGITOS= [0-9]
 ID =  {LETRA}({LETRA}|{DIGITOS})*
-COMENTARIO = "//*" ~  "*//"
+COMENTARIO = ("//*" ~  "*//") | ("//*" ~ "//*" ~  "*//" ~ "*//")
 CTE_ENT= {DIGITOS}+
 CTE_REA= (({DIGITOS}+ "." {DIGITOS}*) | ( {DIGITOS}* "." {DIGITOS}+))
 CTE_BIN= "0b" (0 | 1)+
@@ -66,7 +66,6 @@ CTE_STR = \" (({LETRA} | {DIGITOS}|[^\"]))*\"
     "FLOAT" {return new Token(TokenConstants.ASIG_FL, yytext());}
     "INT" {return new Token(TokenConstants.ASIG_INT, yytext());}
     "STRING" {return new Token(TokenConstants.ASIG_STR, yytext());}
-    "CHAR" {return new Token(TokenConstants.ASIG_CHAR, yytext());}
     "," {return new Token(TokenConstants.COMA, yytext());}
     {ID} {return new Token(TokenConstants.ID, yytext());}
     {CTE_ENT} {Token token =  new Token(TokenConstants.CTE_ENT, yytext());
@@ -94,7 +93,14 @@ CTE_STR = \" (({LETRA} | {DIGITOS}|[^\"]))*\"
                 }
     }
     {CTE_BIN} {return new Token(TokenConstants.CTE_BIN, yytext());}
-    {CTE_STR} {return new Token(TokenConstants.CTE_STR, yytext());}
+    {CTE_STR} {Token token = new Token(TokenConstants.CTE_STR, yytext());
+                    String str = token.getLexeme();
+                    if(str.length() <= 32){//queda 32 porque se cuentan ambas comillas y el limite de string queda en 30
+                        return token;
+                    }else{
+                        throw new ErrorString("Rango String no permitido: <" + yytext() + "> en la linea " + (yyline+1));
+                    }
+               }
   }
   [^] {throw new Error("Caracter no permitido: <" + yytext() + "> en la linea " + (yyline+1));}
 
