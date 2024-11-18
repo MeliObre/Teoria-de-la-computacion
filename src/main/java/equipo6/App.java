@@ -14,7 +14,8 @@ import static equipo6.TokenConstants.*;
 
 public class App extends Component {
     private JButton buttonLoad;
-    private JButton buttonValidate;
+    private JButton buttonValidateLex;
+    private JButton buttonValidateSint;
     private JButton buttonTable;
     private JTextArea textAreaInput;
     private JTextArea textAreaResult;
@@ -26,8 +27,7 @@ public class App extends Component {
         frame.setSize(1100, 500);
         frame.setResizable(false);
         frame.setVisible(true);
-        frame.setTitle("Compilador Lexico");
-        //frame.setModal(true);
+        frame.setTitle("Compilador");
         frame.setLayout(null); // Usar layout nulo
 
         // Inicializar JTextAreas
@@ -51,11 +51,13 @@ public class App extends Component {
 
         // Inicializar botones
         buttonLoad = new JButton("Cargar Archivo");
-        buttonValidate = new JButton("Analisis léxico");
-        buttonTable = new JButton("Tabla de simbolos");
+        buttonValidateLex = new JButton("Analisis Léxico");
+        buttonValidateSint = new JButton("Analisis Sintáctico");
+        buttonTable = new JButton("Tabla de Simbolos");
         // Reubicar los botones en la parte inferior derecha
-        buttonLoad.setBounds(450, 360, 150, 30);
-        buttonValidate.setBounds(610, 360, 150, 30);
+        buttonLoad.setBounds(290, 360, 150, 30);
+        buttonValidateLex.setBounds(450, 360, 150, 30);
+        buttonValidateSint.setBounds(610, 360, 150, 30);
         buttonTable.setBounds(770, 360, 150, 30);
 
         // Agregar ActionListeners a los botones
@@ -63,9 +65,16 @@ public class App extends Component {
             public void actionPerformed(ActionEvent e) {cargarArchivo();}
         });
 
-        buttonValidate.addActionListener(new ActionListener() {
+        buttonValidateLex.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 validarArchivo();
+            }
+        });
+
+        buttonValidateSint.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
             }
         });
 
@@ -93,7 +102,8 @@ public class App extends Component {
         frame.add(labelInput);
         frame.add(labelResult);
         frame.add(buttonLoad);
-        frame.add(buttonValidate);
+        frame.add(buttonValidateLex);
+        frame.add(buttonValidateSint);
         frame.add(buttonTable);
         buttonTable.setEnabled(false);
         frame.setSize(1050, 450);  // Agrandé la ventana
