@@ -18,7 +18,7 @@ action code
 
 /*Declaracion de Terminales */
 terminal ID, PAR_ABR,PAR_CIE,COR_ABR,COR_CIE,OP_SUM,OP_RES,OP_DIV,OP_MUL,OP_MAY,OP_MEN,OP_DIST,OP_IGU,OP_MAYIG,OP_MENIG,
-ASIG_VAR,ASIG_TIPO,CTE_ENT,CTE_REA,CTE_BIN,CTE_STR,BEGIN,END,WHILE,DO,IF,THEN,ELSE,WRITE,PERCENT,AND,
+ASIG_VAR,ASIG_TIPO,CTE_ENT,CTE_REA,CTE_BIN,CTE_STR,BEGIN,END,WHILE,DO,IF,THEN,ELSE,ENDIF,WRITE,PERCENT,AND,
 OR,SEC_DEC,SEC_END,SEC_PROG,SEC_ENDPROG,ASIG_FL,ASIG_INT,ASIG_STR,COMA;
 
 /*Declaracion de No Terminales*/
@@ -64,8 +64,8 @@ salida ::=  ID   {:System.out.println("[Regla 22]”); :}
 | CTE_BIN  {:System.out.println("[Regla 25]”); :}
 | CTE_STR  {:System.out.println("[Regla 26]”); :};
 
-condicional ::= IF condicion THEN programa ELSE programa  {:System.out.println("[Regla 27]”); :}
-| IF condicion THEN programa  {:System.out.println("[Regla 28]”); :};
+condicional ::= IF condicion THEN programa ELSE programa ENDIF {:System.out.println("[Regla 27]”); :}
+| IF condicion THEN programa ENDIF {:System.out.println("[Regla 28]”); :};
 
 iteracion ::= WHILE condicion DO BEGIN programa END  {:System.out.println("[Regla 29]”); :};
 
