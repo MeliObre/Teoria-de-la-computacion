@@ -6,133 +6,97 @@ import java_cup.runtime.*;
 parser code
 {:
     /**Metodo al que se llama automaticamente ante algun error sintactico.*/
-    public void syntax_error(Symbol s){
+    public void syntax_Error(Symbol s){
         System.out.println("Error en la linea " + (s.right+1) + " columna" + s.left + ". "
             + s + " no reconocido. valor " + s.value );
-            }
     }
 :}
 
 action code
 {:
 :}
+
 /*Declaracion de Terminales */
-terminal ID, PAR_ABR,PAR_CIE,COR_ABR,COR_CIE,OP_SUM,OP_RES,OP_DIV,OP_MUL,OP_MAY,OP_MEN,
-             OP_DIST,
-             OP_IGU,
-             OP_MAYIG,
-             OP_MENIG,
-             ASIG_VAR,
-             ASIG_TIPO,
-             COM_ABR,
-             COM_CIE,
-             CTE_ENT,
-             CTE_REA,
-             CTE_BIN,
-             CTE_STR,
-             BEGIN,
-             END,
-             WHILE,
-             DO,
-             IF,
-             THEN,
-             ELSE,
-             WRITE,
-             PERCENT,
-             AND,
-             OR,
-             SEC_DEC,
-             SEC_END,
-             SEC_PROG,
-             SEC_ENDPROG,
-             ASIG_FL,
-             ASIG_INT,
-             ASIG_STR,
-             ASIG_CHAR,
-             COMA,
-             ERROR,
-             EOP;
+terminal ID, PAR_ABR,PAR_CIE,COR_ABR,COR_CIE,OP_SUM,OP_RES,OP_DIV,OP_MUL,OP_MAY,OP_MEN,OP_DIST,OP_IGU,OP_MAYIG,OP_MENIG,
+ASIG_VAR,ASIG_TIPO,CTE_ENT,CTE_REA,CTE_BIN,CTE_STR,BEGIN,END,WHILE,DO,IF,THEN,ELSE,WRITE,PERCENT,AND,
+OR,SEC_DEC,SEC_END,SEC_PROG,SEC_ENDPROG,ASIG_FL,ASIG_INT,ASIG_STR,COMA;
+
 /*Declaracion de No Terminales*/
 non terminal inicio, prog, sent_write, declaracion, programa, lista, asignacion_tipos, tipo, sentencia, iteracion,
 condicional, salida, asignacion, condicion, comparacion, comparador, expresion, termino, factor, percent;
 
 start with inicio;
 
-inicio ::= prog  {:System.out.println(“[Regla 0]”); :};
+inicio ::= prog  {:System.out.println("[Regla 0]”); :}
+| SEC_DEC declaracion SEC_END SEC_PROG programa SEC_ENDPROG {:System.out.println("[Regla 1]”); :};
 
-prog ::= prog sent_write  {:System.out.println(“[Regla 1]”); :}
-| sent_write  {:System.out.println(“[Regla 2]”); :};
+prog ::= prog sent_write  {:System.out.println("[Regla 2]”); :}
+| sent_write  {:System.out.println("[Regla 3]”); :};
 
-sent_write ::= WRITE CTE_STR  {:System.out.println(“[Regla 3]”); :}
-| WRITE CTE_ENT  {:System.out.println(“[Regla 4]”); :}
-| WRITE  CTE_REA  {:System.out.println(“[Regla 5]”); :}
-| WRITE CTE_BIN  {:System.out.println(“[Regla 6]”); :};
+sent_write ::= WRITE CTE_STR  {:System.out.println("[Regla 4]”); :}
+| WRITE CTE_ENT  {:System.out.println("[Regla 5]”); :}
+| WRITE  CTE_REA  {:System.out.println("[Regla 6]”); :}
+| WRITE CTE_BIN  {:System.out.println("[Regla 7]”); :};
 
-inicio ::= SEC_DEC declaracion SEC_END SEC_PROG programa SEC_ENDPROG {:System.out.println(“[Regla 7]”); :};
+declaracion ::= declaracion asignacion_tipos  {:System.out.println("[Regla 8]”); :}
+| asignacion_tipos  {:System.out.println("[Regla 9]”); :};
 
-declaracion ::= declaracion asignacion_tipos  {:System.out.println(“[Regla 8]”); :}
-| asignacion_tipos  {:System.out.println(“[Regla 9]”); :};
+asignacion_tipos ::= COR_ABR lista COR_CIE  {:System.out.println("[Regla 10]”); :};
 
-asignacion_tipos ::= COR_ABR lista COR_CIE  {:System.out.println(“[Regla 10]”); :};
+lista ::= ID COMA lista COMA tipo  {:System.out.println("[Regla 11]”); :}
+|  ID COR_CIE ASIG_TIPO COR_ABR  tipo  {:System.out.println("[Regla 12]”); :};
 
-lista ::= ID COMA lista COMA tipo  {:System.out.println(“[Regla 11]”); :}
-|  ID COR_CIE ASIG_TIPO COR_ABR  tipo  {:System.out.println(“[Regla 12]”); :};
+tipo ::= ASIG_FL   {:System.out.println("[Regla 13]”); :}
+| ASIG_STR   {:System.out.println("[Regla 14]”); :}
+|  ASIG_INT  {:System.out.println("[Regla 15]”); :};
 
-tipo ::= ASIG_FL   {:System.out.println(“[Regla 13]”); :}
-| ASIG_STR   {:System.out.println(“[Regla 14]”); :}
-|  ASIG_INT  {:System.out.println(“[Regla 15]”); :};
+programa ::= programa sentencia  {:System.out.println("[Regla 16]”); :}
+| sentencia  {:System.out.println("[Regla 17]”); :};
 
-programa ::= programa sentencia  {:System.out.println(“[Regla 16]”); :}
-| sentencia  {:System.out.println(“[Regla 17]”); :};
+sentencia ::= iteracion  {:System.out.println("[Regla 18]”); :}
+| condicional  {:System.out.println("[Regla 19]”); :}
+| WRITE salida  {:System.out.println("[Regla 20]”); :}
+| asignacion  {:System.out.println("[Regla 21]”); :};
 
-sentencia ::= iteracion  {:System.out.println(“[Regla 18]”); :};
+salida ::=  ID   {:System.out.println("[Regla 22]”); :}
+| CTE_ENT   {:System.out.println("[Regla 23]”); :}
+| CTE_REA  {:System.out.println("[Regla 24]”); :}
+| CTE_BIN  {:System.out.println("[Regla 25]”); :}
+| CTE_STR  {:System.out.println("[Regla 26]”); :};
 
-sentencia ::= condicional  {:System.out.println(“[Regla 19]”); :};
+condicional ::= IF condicion THEN programa ELSE programa  {:System.out.println("[Regla 27]”); :}
+| IF condicion THEN programa  {:System.out.println("[Regla 28]”); :};
 
-sentencia ::= WRITE salida  {:System.out.println(“[Regla 20]”); :};
+iteracion ::= WHILE condicion DO BEGIN programa END  {:System.out.println("[Regla 29]”); :};
 
-sentencia ::= asignacion  {:System.out.println(“[Regla 21]”); :};
+condicion ::= comparacion  {:System.out.println("[Regla 30]”); :}
+| comparacion AND comparacion  {:System.out.println("[Regla 31]”); :}
+| comparacion OR comparacion  {:System.out.println("[Regla 32]”); :};
 
-salida ::=  ID   {:System.out.println(“[Regla 22]”); :}
-| CTE_ENT   {:System.out.println(“[Regla 23]”); :}
-| CTE_REA  {:System.out.println(“[Regla 24]”); :}
-| CTE_BIN  {:System.out.println(“[Regla 25]”); :}
-| CTE_STR  {:System.out.println(“[Regla 26]”); :};
+comparacion ::= expresion comparador expresion  {:System.out.println("[Regla 33]”); :};
 
-condicional ::= IF condicion THEN programa ELSE programa  {:System.out.println(“[Regla 27]”); :};
+comparador ::= OP_MAY   {:System.out.println("[Regla 34]”); :}
+| OP_MEN  {:System.out.println("[Regla 35]”); :}
+| OP_DIST  {:System.out.println("[Regla 36]”); :}
+| OP_IGU  {:System.out.println("[Regla 37]”); :}
+| OP_MAYIG  {:System.out.println("[Regla 38]”); :}
+| OP_MENIG {:System.out.println("[Regla 39]”); :};
 
-condicional ::= IF condicion THEN programa  {:System.out.println(“[Regla 28]”); :};
+expresion ::= expresion OP_SUM termino {:System.out.println("[Regla 40]”); :}
+| expresion OP_RES termino  {:System.out.println("[Regla 41]”); :}
+| termino {:System.out.println("[Regla 42]”); :};
 
-iteracion ::= WHILE condicion BEGIN programa END  {:System.out.println(“[Regla 29]”); :};
+termino ::= termino OP_MUL factor  {:System.out.println("[Regla 43]”); :}
+| termino OP_DIV factor {:System.out.println("[Regla 43]”); :}
+|  factor {:System.out.println("[Regla 44]”); :};
 
-condicion ::= comparacion  {:System.out.println(“[Regla 30]”); :};
+factor ::= PAR_ABR expresion PAR_CIE {:System.out.println("[Regla 45]”); :}
+| ID {:System.out.println("[Regla 46]”); :}
+| CTE_ENT {:System.out.println("[Regla 47]”); :}
+| CTE_REA {:System.out.println("[Regla 48]”); :}
+| CTE_BIN {:System.out.println("[Regla 49]”); :}
+| percent {:System.out.println("[Regla 50]”); :};
 
-condicion ::= comparacion AND comparacion  {:System.out.println(“[Regla 31]”); :};
+percent ::= PERCENT PAR_ABR expresion COMA expresion PAR_CIE {:System.out.println("[Regla 51]”); :};
 
-condicion ::= comparacion OR comparacion  {:System.out.println(“[Regla 32]”); :};
-
-comparacion ::= expresion comparador expresion  {:System.out.println(“[Regla 33]”); :};
-
-comparador ::= OP_MAY   {:System.out.println(“[Regla 34]”); :}
-| OP_MEN  {:System.out.println(“[Regla 35]”); :}
-| OP_DIST  {:System.out.println(“[Regla 36]”); :}
-| OP_IGU  {:System.out.println(“[Regla 37]”); :}
-| OP_MAYIG  {:System.out.println(“[Regla 38]”); :}
-| OP_MENIG {:System.out.println(“[Regla 39]”); :};
-
-expresion ::= expresion OP_SUM termino {:System.out.println(“[Regla 40]”); :}
-| expresion OP_RES termino  {:System.out.println(“[Regla 41]”); :}
-| termino termino ::= termino OP_MUL factor  {:System.out.println(“[Regla 42]”); :}
-| termino OP_DIV factor {:System.out.println(“[Regla 43]”); :}
-|  factor {:System.out.println(“[Regla 44]”); :};
-
-factor ::= PAR_ABR expresion PAR_CIE {:System.out.println(“[Regla 45]”); :}
-| ID {:System.out.println(“[Regla 46]”); :}
-| CTE_ENT {:System.out.println(“[Regla 47]”); :}
-| CTE_REA {:System.out.println(“[Regla 48]”); :}
-| CTE_BIN {:System.out.println(“[Regla 49]”); :}
-| <percent> {:System.out.println(“[Regla 50]”); :};
-
-percent ::= PERCENT PAR_ABR expresion COMA expresion PAR_CIE {:System.out.println(“[Regla 51]”); :};
-
-asignacion ::= ID ASIG_VAR expresion {:System.out.println(“[Regla 52]”); :};
+asignacion ::= ID ASIG_VAR expresion {:System.out.println("[Regla 52]”); :};
