@@ -20,8 +20,10 @@ PROGRAM.SECTION
         contador ::= contador + 1
         IF (contador >= 5 AND a1 != 45) THEN
             WRITE "contador mayor o igual a 5"
+        ENDIF
         IF (contador <= 4 OR a1 < 30) THEN
             WRITE "contador mayor o igual a 5"
+        ENDIF
         a1 ::= a1 + 5
     END
 
@@ -30,7 +32,7 @@ PROGRAM.SECTION
         WRITE contador
     ELSE
         WRITE "Es distinto de 10"
-
+    ENDIF
 
     b1 ::= 30 - PERCENT(100+a1,2*contador)
 
