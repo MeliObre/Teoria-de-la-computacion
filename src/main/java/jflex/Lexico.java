@@ -740,8 +740,9 @@ public class Lexico implements java_cup.runtime.Scanner {
       if (zzInput == YYEOF && zzStartRead == zzCurrentPos) {
         zzAtEOF = true;
             zzDoEOF();
-          {    return new Symbol(TokenConstants.EOP.ordinal(), null);
- }
+              {
+                return new Symbol(sym.EOF);
+              }
       }
       else {
         switch (zzAction < 0 ? zzAction : ZZ_ACTION[zzAction]) {
@@ -874,7 +875,7 @@ public class Lexico implements java_cup.runtime.Scanner {
             // fall through
           case 64: break;
           case 22: 
-            { return new Symbol(sym.ASIG_VAR, yytext());
+            { return new Symbol(sym.ASIG_TIPO, yytext());
             } 
             // fall through
           case 65: break;
@@ -899,7 +900,7 @@ public class Lexico implements java_cup.runtime.Scanner {
             // fall through
           case 69: break;
           case 27: 
-            { return new Symbol(sym.ASIG_TIPO, yytext());
+            { return new Symbol(sym.ASIG_VAR, yytext());
             } 
             // fall through
           case 70: break;

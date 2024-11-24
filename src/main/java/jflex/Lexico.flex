@@ -48,8 +48,8 @@ CTE_STR = \" (({LETRA} | {DIGITOS}|[^\"]))*\"
     "==" {return new Symbol(sym.OP_IGU, yytext());}
     ">=" {return new Symbol(sym.OP_MAYIG, yytext());}
     "<=" {return new Symbol(sym.OP_MENIG, yytext());}
-    "::=" {return new Symbol(sym.ASIG_TIPO, yytext());}
-    ":=" {return new Symbol(sym.ASIG_VAR, yytext());}
+    ":=" {return new Symbol(sym.ASIG_TIPO, yytext());}
+    "::=" {return new Symbol(sym.ASIG_VAR, yytext());}
     "BEGIN" {return new Symbol(sym.BEGIN, yytext());}
     "END" {return new Symbol(sym.END, yytext());}
     "WHILE" {return new Symbol(sym.WHILE, yytext());}
@@ -106,4 +106,6 @@ CTE_STR = \" (({LETRA} | {DIGITOS}|[^\"]))*\"
                }
   }
   [^] {throw new Error("Caracter no permitido: <" + yytext() + "> en la linea " + (yyline+1));}
+
+  <<EOF>> {return new Symbol(sym.EOF);}
 

@@ -138,7 +138,7 @@ public class App extends Component {
         try {
             String filePath = "src\\main\\java\\equipo6\\archivoActual.txt";
             BufferedReader reader = new BufferedReader(new FileReader(filePath));
-            lexer = new jflex.Lexico(reader);
+            lexer = new Lexico(reader);
             parser sintactico = new parser(lexer);
             sintactico.parse();
         } catch (FileNotFoundException e) {
@@ -239,6 +239,9 @@ public class App extends Component {
                     token = new Symbol(TokenConstants.ERROR.ordinal(), "");
                 }
             }
+            lexer = new Lexico(reader);
+            parser sintactico = new parser(lexer);
+            sintactico.debug_parse();
             reader.close();
             writer.close();
             listaTabla.setLista(lista);
