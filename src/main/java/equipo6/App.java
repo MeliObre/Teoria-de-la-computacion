@@ -1,8 +1,10 @@
 package equipo6;
+import java_cup.runtime.Symbol;
 import jflex.ErrorEnt;
 import jflex.ErrorReal;
 import jflex.ErrorString;
 import jflex.Lexico;
+import jcup.*;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
@@ -74,7 +76,7 @@ public class App extends Component {
         buttonValidateSint.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                validarSint();
             }
         });
 
@@ -110,6 +112,8 @@ public class App extends Component {
         frame.setLocationRelativeTo(null); // Centrar la ventana
     }
 
+
+
     private void crearArchivo() {
         File file = new File("src\\main\\java\\equipo6\\archivoActual.txt");
 
@@ -128,8 +132,22 @@ public class App extends Component {
         }
 
     }
-
-    private void cargarArchivo(){
+    private void validarSint() {
+        crearArchivo();
+        Lexico lexer = null;
+        try {
+            String filePath = "src\\main\\java\\equipo6\\archivoActual.txt";
+            BufferedReader reader = new BufferedReader(new FileReader(filePath));
+            lexer = new jflex.Lexico(reader);
+            parser sintactico = new parser(lexer);
+            sintactico.parse();
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+        private void cargarArchivo(){
         try{
             JFileChooser selectorArchivo = new JFileChooser();
             selectorArchivo.showOpenDialog(this);
@@ -161,70 +179,73 @@ public class App extends Component {
 
     private void validarArchivo() {
         crearArchivo();
+        Lexico lexer = null;
         try {
             String filePath = "src\\main\\java\\equipo6\\archivoActual.txt";
             BufferedReader reader = new BufferedReader(new FileReader(filePath));
-            Lexico lexer = new jflex.Lexico(reader);
-            Token token = null;
+            lexer = new jflex.Lexico(reader);
+            Symbol token = null;
             textAreaResult.setText("");
-
             try {
-                token = lexer.yylex();
+                token = lexer.next_token();
             } catch (ErrorEnt | ErrorReal | ErrorString | Error e) {
                 textAreaResult.append(e.getMessage() + "\n");
-                token = new Token(TokenConstants.ERROR, "");
+                token = new Symbol(TokenConstants.ERROR.ordinal(), "");
             }
-
+            Token tokenActual = new Token(sym.terminalNames[token.sym],String.valueOf(token.value));
             File file = new File("ts.txt");
             FileWriter writer = new FileWriter(file);
             ArrayList<String> lista = new ArrayList<>();
             ArrayList<String> listaId = new ArrayList<>();
             writer.write("NOMBRE TOKEN TIPO VALOR LONGITUD\n");
-            while (token.getType() != TokenConstants.EOF) {
+            while (token.sym != TokenConstants.EOP.ordinal()) {
+                tokenActual = new Token(sym.terminalNames[token.sym],String.valueOf(token.value));
                 try {
-                    if ((token.getType() != TokenConstants.ERROR)){
-                        textAreaResult.append(token.toString() + "\n"); //solo imprime el id en caso que este repetido
-                        if (token.getType() == ID && !isRepetido(listaId,token.getLexeme())){
-                            writer.write(token.getLexeme() + " " + token.getType() + " -  - - " + "\n");
-                            lista.add(token.getLexeme());
-                            lista.add(token.getType().toString());
+                    if ((token.sym != TokenConstants.ERROR.ordinal())){
+                        textAreaResult.append(tokenActual.toString() + "\n"); //solo imprime el id en caso que este repetido
+                        if (token.sym == sym.ID && !isRepetido(listaId,tokenActual.getLexeme())){
+                            writer.write(tokenActual.getLexeme() + " " + tokenActual.getType() + " -  - - " + "\n");
+                            lista.add(tokenActual.getLexeme());
+                            lista.add(tokenActual.getType());
                             lista.add("-");
                             lista.add("-");
                             lista.add("-");
-                            listaId.add(token.getLexeme());
+                            listaId.add(tokenActual.getLexeme());
                         }
-                        if(token.getType() == CTE_REA || token.getType() == CTE_ENT || token.getType() == CTE_BIN){
-                            writer.write("_" + token.getLexeme() + " " + token.getType() + " - " + token.getLexeme() +  " - " + "\n");
-                            lista.add("_" + token.getLexeme());
-                            lista.add(token.getType().toString());
+                        if(token.sym ==  sym.CTE_REA || token.sym == sym.CTE_ENT || token.sym == sym.CTE_BIN){
+                            writer.write("_" + tokenActual.getLexeme() + " " + tokenActual.getType() + " - " + tokenActual.getLexeme() +  " - " + "\n");
+                            lista.add("_" + tokenActual.getLexeme());
+                            lista.add(tokenActual.getType());
                             lista.add("-");
-                            lista.add(token.getLexeme());
+                            lista.add(tokenActual.getLexeme());
                             lista.add("-");
                         }
-                        if (token.getType() == CTE_STR){
-                            writer.write("_" + token.getLexeme().replaceAll("\"", "") + " " +
-                                    token.getType() + " - " + token.getLexeme().replaceAll("\"", "") +  " " + (token.getLexeme().length()-2) + "\n");
-                            lista.add("_" + token.getLexeme().replaceAll("\"", ""));
-                            lista.add(token.getType().toString());
+                        if (token.sym == sym.CTE_STR){
+                            writer.write("_" + tokenActual.getLexeme().replaceAll("\"", "") + " " +
+                                    tokenActual.getType() + " - " + tokenActual.getLexeme().replaceAll("\"", "") +  " " + (tokenActual.getLexeme().length()-2) + "\n");
+                            lista.add("_" + tokenActual.getLexeme().replaceAll("\"", ""));
+                            lista.add(tokenActual.getType());
                             lista.add("-");
-                            lista.add(token.getLexeme().replaceAll("\"", ""));
-                            int lenght = (token.getLexeme().length()-2);
+                            lista.add(tokenActual.getLexeme().replaceAll("\"", ""));
+                            int lenght = (tokenActual.getLexeme().length()-2);
                             lista.add(Integer.toString(lenght));
                         }
                     }
-                    token = lexer.yylex();
+                    token = lexer.next_token();
                 } catch (IOException e) {
                     e.printStackTrace();
                 } catch (ErrorEnt | ErrorReal | ErrorString | Error e) {
                     textAreaResult.append(e.getMessage() + "\n");
-                    token = new Token(TokenConstants.ERROR, "");
+                    token = new Symbol(TokenConstants.ERROR.ordinal(), "");
                 }
             }
             reader.close();
             writer.close();
             listaTabla.setLista(lista);
             buttonTable.setEnabled(true);
-        } catch (IOException e) {e.printStackTrace();}
+        } catch (IOException e) {e.printStackTrace();} catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private boolean isRepetido(ArrayList<String> listaId, String lexema){

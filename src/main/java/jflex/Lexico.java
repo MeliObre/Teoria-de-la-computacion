@@ -601,7 +601,7 @@ public class Lexico implements java_cup.runtime.Scanner {
    * @return      the next token
    * @exception   java.io.IOException  if any I/O-Error occurs
    */
-  public java_cup.runtime.Symbol next_token() throws java.io.IOException, ErrorEnt, ErrorReal {
+  public java_cup.runtime.Symbol next_token() throws java.io.IOException, ErrorEnt, ErrorReal, ErrorString {
     int zzInput;
     int zzAction;
 
@@ -740,7 +740,7 @@ public class Lexico implements java_cup.runtime.Scanner {
       if (zzInput == YYEOF && zzStartRead == zzCurrentPos) {
         zzAtEOF = true;
             zzDoEOF();
-          {    return new Symbol(sym.EOF, null);
+          {    return new Symbol(TokenConstants.EOP.ordinal(), null);
  }
       }
       else {

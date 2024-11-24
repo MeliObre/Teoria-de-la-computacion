@@ -45,5 +45,5 @@ public enum TokenConstants {
     ASIG_CHAR,
     COMA,
     ERROR,
-    EOF
+    EOP
 }

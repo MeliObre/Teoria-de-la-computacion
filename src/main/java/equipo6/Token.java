@@ -1,10 +1,11 @@
 package equipo6;
+import jcup.*;
 
 public class Token  {
-    private TokenConstants type;
+    private String type;
     private String lexeme;
 
-    public Token(TokenConstants type, String lexeme) {
+    public Token(String type, String lexeme) {
         this.type = type;
         this.lexeme = lexeme;
     }
@@ -14,11 +15,11 @@ public class Token  {
         return " Token "+ type +" encontrado, Lexema "+ lexeme;
     }
 
-    public TokenConstants getType() {
+    public String getType() {
         return type;
     }
 
-    public void setType(TokenConstants type) {
+    public void setType(String type) {
         this.type = type;
     }
 

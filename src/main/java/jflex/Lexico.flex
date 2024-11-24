@@ -14,6 +14,7 @@ import jcup.*;
 //%type Symbol
 %throws ErrorEnt
 %throws ErrorReal
+%throws ErrorString
 
 
 LETRA= [a-zA-Z]
@@ -28,7 +29,7 @@ CTE_STR = \" (({LETRA} | {DIGITOS}|[^\"]))*\"
 
 
  %eofval{
-   return new Symbol(sym.EOF, null);
+   return new Symbol(TokenConstants.EOP.ordinal(), null);
 %eofval}
 
 %%
