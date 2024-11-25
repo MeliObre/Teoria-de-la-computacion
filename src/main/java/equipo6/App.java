@@ -12,8 +12,6 @@ import java.awt.event.*;
 import java.io.*;
 import java.util.ArrayList;
 
-import static equipo6.TokenConstants.*;
-
 public class App extends Component {
     private JButton buttonLoad;
     private JButton buttonValidateLex;
@@ -23,6 +21,7 @@ public class App extends Component {
     private JTextArea textAreaResult;
     public JFrame frame;
     private TablaSimbolos listaTabla = new TablaSimbolos();
+    private ArrayList<String> listaTablaTemp;
 
     public App() throws FileNotFoundException {
         frame = new JFrame();
@@ -69,14 +68,14 @@ public class App extends Component {
 
         buttonValidateLex.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                validarArchivo();
+                validarLex();
             }
         });
 
         buttonValidateSint.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                validarSint();
+                //validarSint();
             }
         });
 
@@ -94,7 +93,7 @@ public class App extends Component {
         // Asignar acción de Escape para validar archivo
         frame.getRootPane().registerKeyboardAction(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                validarArchivo();
+                validarLex();
             }
         }, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
 
@@ -133,27 +132,46 @@ public class App extends Component {
 
     }
     private void validarSint() {
-        crearArchivo();
+        //crearArchivo();
         Lexico lexer = null;
         try {
             String filePath = "src\\main\\java\\equipo6\\archivoActual.txt";
             BufferedReader reader = new BufferedReader(new FileReader(filePath));
             lexer = new Lexico(reader);
-            parser sintactico = new parser(lexer);
+            parser sintactico = new parser(lexer,listaTablaTemp);
             sintactico.debug_parse();
             ArrayList<String> reglas = (ArrayList<String>) sintactico.getList();
             for (int i = 0; i < reglas.size(); i++) {
                 String regla = reglas.get(i);
+                if (regla.contains("[Regla 11]")){
+                }
                 textAreaResult.append(regla + "\n"); //Salto de linea al final
             }
             sintactico.emptyList();
+            cargarTs(listaTablaTemp);
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
-        private void cargarArchivo(){
+
+    private void cargarTs(ArrayList<String> listaTablaTemp) {
+        try {
+            File file = new File("ts.txt");
+            FileWriter writer = new FileWriter(file);
+            writer.write("NOMBRE TOKEN TIPO VALOR LONGITUD\n");
+            for (int i = 0; i < listaTablaTemp.size();i = i + 5){
+                writer.write(listaTablaTemp.get(i) + " " + listaTablaTemp.get(i + 1) + " " + listaTablaTemp.get(i + 2)
+                        + " " + listaTablaTemp.get(i + 3) + " " + listaTablaTemp.get(i + 4) + "\n");
+            }
+            writer.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void cargarArchivo(){
         try{
             JFileChooser selectorArchivo = new JFileChooser();
             selectorArchivo.showOpenDialog(this);
@@ -183,13 +201,13 @@ public class App extends Component {
         }
     }
 
-    private void validarArchivo() {
+    private void validarLex() {
         crearArchivo();
         Lexico lexer = null;
         try {
             String filePath = "src\\main\\java\\equipo6\\archivoActual.txt";
             BufferedReader reader = new BufferedReader(new FileReader(filePath));
-            lexer = new jflex.Lexico(reader);
+            lexer = new Lexico(reader);
             Symbol token = null;
             textAreaResult.setText("");
             try {
@@ -199,42 +217,40 @@ public class App extends Component {
                 token = new Symbol(TokenConstants.ERROR.ordinal(), "");
             }
             Token tokenActual = new Token(sym.terminalNames[token.sym],String.valueOf(token.value));
-            File file = new File("ts.txt");
-            FileWriter writer = new FileWriter(file);
-            ArrayList<String> lista = new ArrayList<>();
+
+            listaTablaTemp = new ArrayList<>();
             ArrayList<String> listaId = new ArrayList<>();
-            writer.write("NOMBRE TOKEN TIPO VALOR LONGITUD\n");
             while (token.sym != sym.EOF) {
                 tokenActual = new Token(sym.terminalNames[token.sym],String.valueOf(token.value));
                 try {
                     if ((token.sym != TokenConstants.ERROR.ordinal())){
-                        textAreaResult.append(tokenActual.toString() + "\n"); //solo imprime el id en caso que este repetido
+                        //textAreaResult.append(tokenActual.toString() + "\n"); //solo imprime el id en caso que este repetido
                         if (token.sym == sym.ID && !isRepetido(listaId,tokenActual.getLexeme())){
-                            writer.write(tokenActual.getLexeme() + " " + tokenActual.getType() + " -  - - " + "\n");
-                            lista.add(tokenActual.getLexeme());
-                            lista.add(tokenActual.getType());
-                            lista.add("-");
-                            lista.add("-");
-                            lista.add("-");
+                            //writer.write(tokenActual.getLexeme() + " " + tokenActual.getType() + " -  - - " + "\n");
+                            listaTablaTemp.add(tokenActual.getLexeme());
+                            listaTablaTemp.add(tokenActual.getType());
+                            listaTablaTemp.add("-");
+                            listaTablaTemp.add("-");
+                            listaTablaTemp.add("-");
                             listaId.add(tokenActual.getLexeme());
                         }
                         if(token.sym ==  sym.CTE_REA || token.sym == sym.CTE_ENT || token.sym == sym.CTE_BIN){
-                            writer.write("_" + tokenActual.getLexeme() + " " + tokenActual.getType() + " - " + tokenActual.getLexeme() +  " - " + "\n");
-                            lista.add("_" + tokenActual.getLexeme());
-                            lista.add(tokenActual.getType());
-                            lista.add("-");
-                            lista.add(tokenActual.getLexeme());
-                            lista.add("-");
+                            //writer.write("_" + tokenActual.getLexeme() + " " + tokenActual.getType() + " - " + tokenActual.getLexeme() +  " - " + "\n");
+                            listaTablaTemp.add("_" + tokenActual.getLexeme());
+                            listaTablaTemp.add(tokenActual.getType());
+                            listaTablaTemp.add("-");
+                            listaTablaTemp.add(tokenActual.getLexeme());
+                            listaTablaTemp.add("-");
                         }
                         if (token.sym == sym.CTE_STR){
-                            writer.write("_" + tokenActual.getLexeme().replaceAll("\"", "") + " " +
-                                    tokenActual.getType() + " - " + tokenActual.getLexeme().replaceAll("\"", "") +  " " + (tokenActual.getLexeme().length()-2) + "\n");
-                            lista.add("_" + tokenActual.getLexeme().replaceAll("\"", ""));
-                            lista.add(tokenActual.getType());
-                            lista.add("-");
-                            lista.add(tokenActual.getLexeme().replaceAll("\"", ""));
+                            //writer.write("_" + tokenActual.getLexeme().replaceAll("\"", "") + " " +
+                                    //tokenActual.getType() + " - " + tokenActual.getLexeme().replaceAll("\"", "") +  " " + (tokenActual.getLexeme().length()-2) + "\n");
+                            listaTablaTemp.add("_" + tokenActual.getLexeme().replaceAll("\"", ""));
+                            listaTablaTemp.add(tokenActual.getType());
+                            listaTablaTemp.add("-");
+                            listaTablaTemp.add(tokenActual.getLexeme().replaceAll("\"", ""));
                             int lenght = (tokenActual.getLexeme().length()-2);
-                            lista.add(Integer.toString(lenght));
+                            listaTablaTemp.add(Integer.toString(lenght));
                         }
                     }
                     token = lexer.next_token();
@@ -249,8 +265,8 @@ public class App extends Component {
             //parser sintactico = new parser(lexer);
             //sintactico.debug_parse();
             reader.close();
-            writer.close();
-            listaTabla.setLista(lista);
+
+            validarSint();
             buttonTable.setEnabled(true);
         } catch (IOException e) {e.printStackTrace();} catch (Exception e) {
             throw new RuntimeException(e);
@@ -267,6 +283,7 @@ public class App extends Component {
     }
 
     private void mostrarTabla(){
+        listaTabla.setLista(listaTablaTemp);
         JFrame frameTabla = new JFrame();
         frameTabla.setTitle("Tabla de Simbolos");
         //se suma una fila para los encabezados
@@ -278,7 +295,7 @@ public class App extends Component {
         frameTabla.setVisible(true);
         tabla.setVisible(true);
         frameTabla.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-
+        tabla.setEnabled(false);
         //agrego valores a la tabla grafica
         for (int i = 0; i < listaTabla.getFilaTamanio(); i++) {
             for (int j = 0; j < listaTabla.getColumnaTamanio(); j++) {

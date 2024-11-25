@@ -6,13 +6,27 @@ import java_cup.runtime.*;
 parser code
 {:
     private List<String> listaReglas = new ArrayList<String>();
+    private ArrayList<String> listaTabla;
 
+
+    public parser(Scanner s, ArrayList<String> tabla){
+        super(s);
+        listaTabla = tabla;
+    }
     /**Metodo al que se llama automaticamente ante algun error sintactico.*/
     public void syntax_Error(Symbol s){
         System.out.println("Error en la linea " + (s.right+1) + " columna" + s.left + ". "
             + s + " no reconocido. valor " + s.value );
     }
 
+    public void insertarTipoID(String id, String tipo){
+        for (int i = 0;i < listaTabla.size();i = i + 5){
+            if (listaTabla.get(i).equals(id)){
+                listaTabla.remove(i + 2);
+                listaTabla.add(i + 2,tipo);
+            }
+        }
+    }
     public List<String> getList() {
             return this.listaReglas;
     }
@@ -40,10 +54,10 @@ start with inicio;
 inicio ::= prog {:listaReglas.add("[Regla 0] --> Compila correctamente llegando al símbolo start"); :};
 
 prog ::= SEC_DEC declaracion SEC_END SEC_PROG programa SEC_ENDPROG {:listaReglas.add("[Regla 1] --> Programa completo"); :}
-    | SEC_PROG prt SEC_ENDPROG  {: listaReglas.add("[Regla 2] --> Programa sin declaraciones"); :};
+    | SEC_PROG prt SEC_ENDPROG {: listaReglas.add("[Regla 2] --> Programa sin declaraciones"); :};
 
 prt ::= prt sent_write  {:listaReglas.add("[Regla 3] --> Linea de sentencia write"); :}
-| sent_write  {:listaReglas.add("[Regla 4] --> Ultima sentencia write"); :};
+| sent_write {:listaReglas.add("[Regla 4] --> Ultima sentencia write"); :};
 
 sent_write ::= WRITE cte  {:listaReglas.add("[Regla 5] --> Write constante");:}
 | WRITE ident  {:listaReglas.add("[Regla 6] --> Write identificador"); :};
@@ -55,8 +69,12 @@ declaracion ::= asignacion_tipos declaracion   {:listaReglas.add("[Regla 7] --> 
 
 asignacion_tipos ::= COR_ABR lista COR_CIE  {:listaReglas.add("[Regla 9] --> [ lista ]");  :};
 
-lista ::= ID:id COMA lista COMA tipo  {: listaReglas.add("[Regla 10] --> id, lista ,tipo   ID = " + id); RESULT = id;  :}
-|  ID:id COR_CIE ASIG_TIPO COR_ABR tipo  {:listaReglas.add("[Regla 11] --> id] := [tipo    ID = " + id); RESULT = id;:};
+lista ::= ID:id COMA lista COMA tipo:t  {: listaReglas.add("[Regla 10] --> id, lista ,tipo   ID = " + id);
+                                            RESULT = id;
+                                            insertarTipoID((String)id, (String) t);:}
+|  ID:id COR_CIE ASIG_TIPO COR_ABR tipo:t  {:listaReglas.add("[Regla 11] --> id] := [tipo    ID = " + id);
+                                                RESULT = id;
+                                                insertarTipoID((String) id, (String) t);:};
 
 tipo ::= ASIG_FL:tipo_float {:listaReglas.add("[Regla 12] --> Float"); RESULT = tipo_float;:}
 | ASIG_STR:tipo_string {:listaReglas.add("[Regla 13] --> String"); RESULT = tipo_string;:}
