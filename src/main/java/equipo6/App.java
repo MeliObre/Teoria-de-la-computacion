@@ -138,18 +138,22 @@ public class App extends Component {
         try {
             String filePath = "src\\main\\java\\equipo6\\archivoActual.txt";
             BufferedReader reader = new BufferedReader(new FileReader(filePath));
-            lexer = new Lexico(reader);
-            parser sintactico = new parser(lexer, listaTablaTemp);
-            sintactico.parse();
-            ArrayList<String> reglas = (ArrayList<String>) sintactico.getList();
-            for (int i = 0; i < reglas.size(); i++) {
-                String regla = reglas.get(i);
-                if (regla.contains("[Regla 11]")) {
+            if (reader.readLine() == null){
+                textAreaResult.append("El archivo esta vacio.");
+            }else {
+                lexer = new Lexico(reader);
+                parser sintactico = new parser(lexer, listaTablaTemp);
+                sintactico.parse();
+                ArrayList<String> reglas = (ArrayList<String>) sintactico.getList();
+                for (int i = 0; i < reglas.size(); i++) {
+                    String regla = reglas.get(i);
+                    if (regla.contains("[Regla 11]")) {
+                    }
+                    textAreaResult.append(regla + "\n"); //Salto de linea al final
                 }
-                textAreaResult.append(regla + "\n"); //Salto de linea al final
+                sintactico.emptyList();
+                cargarTs(listaTablaTemp);
             }
-            sintactico.emptyList();
-            cargarTs(listaTablaTemp);
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         } catch (Exception e) {

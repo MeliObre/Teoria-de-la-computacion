@@ -310,8 +310,12 @@ public class parser extends java_cup.runtime.lr_parser {
     }
     /**Metodo al que se llama automaticamente ante algun error sintactico.*/
     public void syntax_error(Symbol s){
-        this.error = ("Error en la linea " + (s.right+1) + " columna " + s.left + ". "
+        if (s.value != null){
+            this.error = ("Error en la linea " + (s.right+1) + " columna " + s.left + ". "
             + s + " no reconocido. Valor " + s.value );
+            }else {
+                this.error = ("");
+            }
     }
 
     public void insertarTipoID(String id, String tipo){
