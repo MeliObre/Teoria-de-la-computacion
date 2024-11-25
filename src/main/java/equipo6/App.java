@@ -14,7 +14,7 @@ import java.util.ArrayList;
 
 public class App extends Component {
     private JButton buttonLoad;
-    private JButton buttonValidateLex;
+    private JButton buttonCompilar;
     private JButton buttonValidateSint;
     private JButton buttonTable;
     private JTextArea textAreaInput;
@@ -52,13 +52,12 @@ public class App extends Component {
 
         // Inicializar botones
         buttonLoad = new JButton("Cargar Archivo");
-        buttonValidateLex = new JButton("Analisis Léxico");
-        buttonValidateSint = new JButton("Analisis Sintáctico");
+        buttonCompilar = new JButton("Compilar");
+        //buttonValidateSint = new JButton("Analisis Sintáctico");
         buttonTable = new JButton("Tabla de Simbolos");
         // Reubicar los botones en la parte inferior derecha
-        buttonLoad.setBounds(290, 360, 150, 30);
-        buttonValidateLex.setBounds(450, 360, 150, 30);
-        buttonValidateSint.setBounds(610, 360, 150, 30);
+        buttonLoad.setBounds(450, 360, 150, 30);
+        buttonCompilar.setBounds(610, 360, 150, 30);
         buttonTable.setBounds(770, 360, 150, 30);
 
         // Agregar ActionListeners a los botones
@@ -66,18 +65,20 @@ public class App extends Component {
             public void actionPerformed(ActionEvent e) {cargarArchivo();}
         });
 
-        buttonValidateLex.addActionListener(new ActionListener() {
+        buttonCompilar.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 validarLex();
             }
         });
 
+        /*
         buttonValidateSint.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //validarSint();
+                validarSint();
             }
         });
+        */
 
         buttonTable.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -103,8 +104,8 @@ public class App extends Component {
         frame.add(labelInput);
         frame.add(labelResult);
         frame.add(buttonLoad);
-        frame.add(buttonValidateLex);
-        frame.add(buttonValidateSint);
+        frame.add(buttonCompilar);
+        //frame.add(buttonValidateSint);
         frame.add(buttonTable);
         buttonTable.setEnabled(false);
         frame.setSize(1050, 450);  // Agrandé la ventana
@@ -138,12 +139,12 @@ public class App extends Component {
             String filePath = "src\\main\\java\\equipo6\\archivoActual.txt";
             BufferedReader reader = new BufferedReader(new FileReader(filePath));
             lexer = new Lexico(reader);
-            parser sintactico = new parser(lexer,listaTablaTemp);
-            sintactico.debug_parse();
+            parser sintactico = new parser(lexer, listaTablaTemp);
+            sintactico.parse();
             ArrayList<String> reglas = (ArrayList<String>) sintactico.getList();
             for (int i = 0; i < reglas.size(); i++) {
                 String regla = reglas.get(i);
-                if (regla.contains("[Regla 11]")){
+                if (regla.contains("[Regla 11]")) {
                 }
                 textAreaResult.append(regla + "\n"); //Salto de linea al final
             }
@@ -152,7 +153,7 @@ public class App extends Component {
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            textAreaResult.setText(parser.getError());
         }
     }
 
@@ -265,7 +266,6 @@ public class App extends Component {
             //parser sintactico = new parser(lexer);
             //sintactico.debug_parse();
             reader.close();
-
             validarSint();
             buttonTable.setEnabled(true);
         } catch (IOException e) {e.printStackTrace();} catch (Exception e) {

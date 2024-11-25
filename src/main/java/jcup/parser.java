@@ -302,7 +302,7 @@ public class parser extends java_cup.runtime.lr_parser {
 
     private List<String> listaReglas = new ArrayList<String>();
     private ArrayList<String> listaTabla;
-
+    private static String error;
 
     public parser(Scanner s, ArrayList<String> tabla){
         super(s);
@@ -310,8 +310,8 @@ public class parser extends java_cup.runtime.lr_parser {
     }
     /**Metodo al que se llama automaticamente ante algun error sintactico.*/
     public void syntax_Error(Symbol s){
-        System.out.println("Error en la linea " + (s.right+1) + " columna" + s.left + ". "
-            + s + " no reconocido. valor " + s.value );
+        this.error = ("Error en la linea " + (s.right+1) + " columna" + s.left + ". "
+            + s + " no reconocido. Valor " + s.value );
     }
 
     public void insertarTipoID(String id, String tipo){
@@ -328,7 +328,11 @@ public class parser extends java_cup.runtime.lr_parser {
 
     public void emptyList() {
             this.listaReglas.clear();
-        }
+    }
+
+    public static String getError() {
+        return (error != null) ? error : "Error desconocido.";
+    }
 
 
 /** Cup generated class to encapsulate user supplied action code.*/
