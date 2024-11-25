@@ -141,6 +141,12 @@ public class App extends Component {
             lexer = new Lexico(reader);
             parser sintactico = new parser(lexer);
             sintactico.parse();
+            ArrayList<String> reglas = (ArrayList<String>) sintactico.getList();
+            for (int i = 0; i < reglas.size(); i++) {
+                String regla = reglas.get(i);
+                textAreaResult.append(regla + "\n"); //Salto de linea al final
+            }
+            sintactico.emptyList();
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         } catch (Exception e) {
@@ -241,7 +247,7 @@ public class App extends Component {
             }
             lexer = new Lexico(reader);
             parser sintactico = new parser(lexer);
-            sintactico.debug_parse();
+            //sintactico.debug_parse();
             reader.close();
             writer.close();
             listaTabla.setLista(lista);

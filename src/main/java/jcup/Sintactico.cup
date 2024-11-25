@@ -5,11 +5,21 @@ import java_cup.runtime.*;
 
 parser code
 {:
+    private List<String> listaReglas = new ArrayList<String>();
+
     /**Metodo al que se llama automaticamente ante algun error sintactico.*/
     public void syntax_Error(Symbol s){
         System.out.println("Error en la linea " + (s.right+1) + " columna" + s.left + ". "
             + s + " no reconocido. valor " + s.value );
     }
+
+    public List<String> getList() {
+            return this.listaReglas;
+    }
+
+    public void emptyList() {
+            this.listaReglas.clear();
+        }
 :}
 
 action code
@@ -27,80 +37,80 @@ condicional, salida, asignacion, condicion, comparacion, comparador, expresion, 
 
 start with inicio;
 
-inicio ::= prog {:System.out.println("[Regla 0] --> Compila correctamente llegando al símbolo start"); :};
+inicio ::= prog {:listaReglas.add("[Regla 0] --> Compila correctamente llegando al símbolo start"); :};
 
-prog ::= SEC_DEC declaracion SEC_END SEC_PROG programa SEC_ENDPROG {:System.out.println("[Regla 1] --> Programa completo"); :}
-    | prt  {:System.out.println("[Regla 2] --> Programa sin declaraciones"); :};
+prog ::= SEC_DEC declaracion SEC_END SEC_PROG programa SEC_ENDPROG {:listaReglas.add("[Regla 1] --> Programa completo"); :}
+    | SEC_DEC prt SEC_END  {: listaReglas.add("[Regla 2] --> Programa sin declaraciones"); :};
 
-prt ::= prt sent_write  {:System.out.println("[Regla 3] --> Linea de sentencia write"); :}
-| sent_write  {:System.out.println("[Regla 4] --> Ultima sentencia write"); :};
+prt ::= prt sent_write  {:listaReglas.add("[Regla 3] --> Linea de sentencia write"); :}
+| sent_write  {:listaReglas.add("[Regla 4] --> Ultima sentencia write"); :};
 
-sent_write ::= WRITE cte  {:System.out.println("[Regla 5] --> Write constante");:}
-| WRITE ident  {:System.out.println("[Regla 6] --> Write identificador"); :};
-/*| WRITE CTE_REA  {:System.out.println("[Regla 6]"); :}
-| WRITE CTE_BIN  {:System.out.println("[Regla 7]"); :};**/
+sent_write ::= WRITE cte  {:listaReglas.add("[Regla 5] --> Write constante");:}
+| WRITE ident  {:listaReglas.add("[Regla 6] --> Write identificador"); :};
+/*| WRITE CTE_REA  {:listaReglas.add("[Regla 6]"); :}
+| WRITE CTE_BIN  {:listaReglas.add("[Regla 7]"); :};**/
 
-declaracion ::= asignacion_tipos declaracion   {:System.out.println("[Regla 7] --> Declaraciones"); :}
-| asignacion_tipos {:System.out.println("[Regla 8] --> Linea de declaración "); :};
+declaracion ::= asignacion_tipos declaracion   {:listaReglas.add("[Regla 7] --> Declaraciones"); :}
+| asignacion_tipos {:listaReglas.add("[Regla 8] --> Linea de declaración "); :};
 
-asignacion_tipos ::= COR_ABR:ca lista COR_CIE:cc  {:System.out.println("[Regla 9] --> [ lista ]");  :};
+asignacion_tipos ::= COR_ABR lista COR_CIE  {:listaReglas.add("[Regla 9] --> [ lista ]");  :};
 
-lista ::= ID:id COMA lista COMA tipo  {: System.out.println("[Regla 10] --> id, lista ,tipo" + id); RESULT = id;  :}
-|  ID:id COR_CIE:cc ASIG_TIPO:at COR_ABR:ca tipo  {:System.out.println("[Regla 11] --> id] := [tipo" + id); RESULT = id;:};
+lista ::= ID:id COMA lista COMA tipo  {: listaReglas.add("[Regla 10] --> id, lista ,tipo   ID = " + id); RESULT = id;  :}
+|  ID:id COR_CIE ASIG_TIPO COR_ABR tipo  {:listaReglas.add("[Regla 11] --> id] := [tipo    ID = " + id); RESULT = id;:};
 
-tipo ::= ASIG_FL {:System.out.println("[Regla 12] --> Float"); :}
-| ASIG_STR {:System.out.println("[Regla 13] --> String");:}
-|  ASIG_INT {:System.out.println("[Regla 14] --> Integer"); :};
+tipo ::= ASIG_FL:tipo_float {:listaReglas.add("[Regla 12] --> Float"); RESULT = tipo_float;:}
+| ASIG_STR:tipo_string {:listaReglas.add("[Regla 13] --> String"); RESULT = tipo_string;:}
+|  ASIG_INT:tipo_integer {:listaReglas.add("[Regla 14] --> Integer"); RESULT = tipo_integer; :};
 
-programa ::= programa sentencia  {:System.out.println("[Regla 15] --> Bloque de sentencias"); :}
-| sentencia  {:System.out.println("[Regla 16] --> Sentencia"); :};
+programa ::= programa sentencia  {:listaReglas.add("[Regla 15] --> Bloque de sentencias"); :}
+| sentencia  {:listaReglas.add("[Regla 16] --> Sentencia"); :};
 
-sentencia ::= iteracion  {:System.out.println("[Regla 17] --> Iteración"); :}
-| condicional  {:System.out.println("[Regla 18] --> Condicional"); :}
-| salida  {:System.out.println("[Regla 19] --> Salida"); :}
-| asignacion  {:System.out.println("[Regla 20] --> Asignación"); :};
+sentencia ::= iteracion  {:listaReglas.add("[Regla 17] --> Iteración"); :}
+| condicional  {:listaReglas.add("[Regla 18] --> Condicional"); :}
+| salida  {:listaReglas.add("[Regla 19] --> Salida"); :}
+| asignacion  {:listaReglas.add("[Regla 20] --> Asignación"); :};
 
-salida ::= WRITE ident   {:System.out.println("[Regla 22] --> Write identificador"); :}
-| WRITE cte   {:System.out.println("[Regla 23] --> Write constante"); :};
+salida ::= WRITE ident   {:listaReglas.add("[Regla 22] --> Write identificador"); :}
+| WRITE cte   {:listaReglas.add("[Regla 23] --> Write constante"); :};
 
-condicional ::= IF PAR_ABR condicion PAR_CIE THEN programa ELSE programa ENDIF {:System.out.println("[Regla 21] --> IF (condición) THEN programa ELSE programa ENDIF"); :}
-| IF PAR_ABR condicion PAR_CIE THEN programa ENDIF {:System.out.println("[Regla 22] --> IF (condición) THEN programa ENDIF"); :};
+condicional ::= IF PAR_ABR condicion PAR_CIE THEN programa ELSE programa ENDIF {:listaReglas.add("[Regla 21] --> IF (condición) THEN programa ELSE programa ENDIF"); :}
+| IF PAR_ABR condicion PAR_CIE THEN programa ENDIF {:listaReglas.add("[Regla 22] --> IF (condición) THEN programa ENDIF"); :};
 
-iteracion ::= WHILE PAR_ABR condicion PAR_CIE DO BEGIN programa END  {:System.out.println("[Regla 23] --> WHILE (condición) DO BEGIN programa END"); :};
+iteracion ::= WHILE PAR_ABR condicion PAR_CIE DO BEGIN programa END  {:listaReglas.add("[Regla 23] --> WHILE (condición) DO BEGIN programa END"); :};
 
-condicion ::= comparacion  {:System.out.println("[Regla 24] --> Comparación"); :}
-| comparacion AND comparacion  {:System.out.println("[Regla 25] --> Comparación AND Comparación"); :}
-| comparacion OR comparacion  {:System.out.println("[Regla 26] --> Comparación OR Comparación"); :};
+condicion ::= comparacion  {:listaReglas.add("[Regla 24] --> Comparación"); :}
+| comparacion AND comparacion  {:listaReglas.add("[Regla 25] --> Comparación AND Comparación"); :}
+| comparacion OR comparacion  {:listaReglas.add("[Regla 26] --> Comparación OR Comparación"); :};
 
-comparacion ::= expresion comparador expresion  {:System.out.println("[Regla 27] --> Expresión operador expresión"); :};
+comparacion ::= expresion comparador expresion  {:listaReglas.add("[Regla 27] --> Expresión operador expresión"); :};
 
-comparador ::= OP_MAY   {:System.out.println("[Regla 28] --> Operador mayor"); :}
-| OP_MEN  {:System.out.println("[Regla 29] --> Operador menor"); :}
-| OP_DIST  {:System.out.println("[Regla 30] --> Operador distinto"); :}
-| OP_IGU  {:System.out.println("[Regla 31] --> Operador igual"); :}
-| OP_MAYIG  {:System.out.println("[Regla 32] --> Operador mayor igual"); :}
-| OP_MENIG {:System.out.println("[Regla 33] --> Operador menor igual"); :};
+comparador ::= OP_MAY   {:listaReglas.add("[Regla 28] --> Operador mayor"); :}
+| OP_MEN  {:listaReglas.add("[Regla 29] --> Operador menor"); :}
+| OP_DIST  {:listaReglas.add("[Regla 30] --> Operador distinto"); :}
+| OP_IGU  {:listaReglas.add("[Regla 31] --> Operador igual"); :}
+| OP_MAYIG  {:listaReglas.add("[Regla 32] --> Operador mayor igual"); :}
+| OP_MENIG {:listaReglas.add("[Regla 33] --> Operador menor igual"); :};
 
-expresion ::= expresion OP_SUM termino {:System.out.println("[Regla 34] --> E+T"); :}
-| expresion OP_RES termino  {:System.out.println("[Regla 35] --> E-T"); :}
-| termino {:System.out.println("[Regla 36] --> T"); :};
+expresion ::= expresion OP_SUM termino {:listaReglas.add("[Regla 34] --> E+T"); :}
+| expresion OP_RES termino  {:listaReglas.add("[Regla 35] --> E-T"); :}
+| termino {:listaReglas.add("[Regla 36] --> T"); :};
 
-termino ::= termino OP_MUL factor {:System.out.println("[Regla 37] --> T*F"); :}
-| termino OP_DIV factor {:System.out.println("[Regla 38] --> T/F"); :}
-|  factor:f {:System.out.println("[Regla 39] --> F valor = " + f); :};
+termino ::= termino OP_MUL factor {:listaReglas.add("[Regla 37] --> T*F"); :}
+| termino OP_DIV factor {:listaReglas.add("[Regla 38] --> T/F"); :}
+|  factor:f {:listaReglas.add("[Regla 39] --> F valor = " + f); :};
 
-ident ::= ID:id {:System.out.println("[Regla 40] --> Identificador = " + id); :};
+ident ::= ID:id {:listaReglas.add("[Regla 40] --> Identificador = " + id); :};
 
-cte ::= CTE_ENT:ent {:System.out.println("[Regla 41] --> Constante entera = " + ent); :}
-| CTE_REA:rea {:System.out.println("[Regla 42] --> Constante real = " + rea); :}
-| CTE_BIN:bin {:System.out.println("[Regla 43] --> Constante binaria " + bin); :}
-| CTE_STR:str {:System.out.println("[Regla 44] --> Constante string " + str); :};
+cte ::= CTE_ENT:ent {:listaReglas.add("[Regla 41] --> Constante entera = " + ent); :}
+| CTE_REA:rea {:listaReglas.add("[Regla 42] --> Constante real = " + rea); :}
+| CTE_BIN:bin {:listaReglas.add("[Regla 43] --> Constante binaria " + bin); :}
+| CTE_STR:str {:listaReglas.add("[Regla 44] --> Constante string " + str); :};
 
-factor ::= PAR_ABR expresion PAR_CIE {:System.out.println("[Regla 45] --> (expresión)"); :}
-| ident {:System.out.println("[Regla 46] --> Identificador"); :}
-| cte {:System.out.println("[Regla 47] --> Constante"); :}
-| percent {:System.out.println("[Regla 48] --> Funcion PERCENT"); :};
+factor ::= PAR_ABR expresion PAR_CIE {:listaReglas.add("[Regla 45] --> (expresión)"); :}
+| ident {:listaReglas.add("[Regla 46] --> Identificador"); :}
+| cte {:listaReglas.add("[Regla 47] --> Constante"); :}
+| percent {:listaReglas.add("[Regla 48] --> Funcion PERCENT"); :};
 
-percent ::= PERCENT PAR_ABR expresion COMA expresion PAR_CIE {:System.out.println("[Regla 49] --> PERCENT(expresión,expresión)"); :};
+percent ::= PERCENT PAR_ABR expresion COMA expresion PAR_CIE {:listaReglas.add("[Regla 49] --> PERCENT(expresión,expresión)"); :};
 
-asignacion ::= ID ASIG_VAR expresion {:System.out.println("[Regla 50] --> Asignación id ::= expresión"); :};
+asignacion ::= ID ASIG_VAR expresion {:listaReglas.add("[Regla 50] --> Asignación id ::= expresión"); :};
