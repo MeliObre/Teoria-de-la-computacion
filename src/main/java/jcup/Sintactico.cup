@@ -40,7 +40,7 @@ start with inicio;
 inicio ::= prog {:listaReglas.add("[Regla 0] --> Compila correctamente llegando al símbolo start"); :};
 
 prog ::= SEC_DEC declaracion SEC_END SEC_PROG programa SEC_ENDPROG {:listaReglas.add("[Regla 1] --> Programa completo"); :}
-    | SEC_DEC prt SEC_END  {: listaReglas.add("[Regla 2] --> Programa sin declaraciones"); :};
+    | SEC_PROG prt SEC_ENDPROG  {: listaReglas.add("[Regla 2] --> Programa sin declaraciones"); :};
 
 prt ::= prt sent_write  {:listaReglas.add("[Regla 3] --> Linea de sentencia write"); :}
 | sent_write  {:listaReglas.add("[Regla 4] --> Ultima sentencia write"); :};

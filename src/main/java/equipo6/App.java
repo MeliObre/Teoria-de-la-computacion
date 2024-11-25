@@ -140,7 +140,7 @@ public class App extends Component {
             BufferedReader reader = new BufferedReader(new FileReader(filePath));
             lexer = new Lexico(reader);
             parser sintactico = new parser(lexer);
-            sintactico.parse();
+            sintactico.debug_parse();
             ArrayList<String> reglas = (ArrayList<String>) sintactico.getList();
             for (int i = 0; i < reglas.size(); i++) {
                 String regla = reglas.get(i);
@@ -204,7 +204,7 @@ public class App extends Component {
             ArrayList<String> lista = new ArrayList<>();
             ArrayList<String> listaId = new ArrayList<>();
             writer.write("NOMBRE TOKEN TIPO VALOR LONGITUD\n");
-            while (token.sym != TokenConstants.EOP.ordinal()) {
+            while (token.sym != sym.EOF) {
                 tokenActual = new Token(sym.terminalNames[token.sym],String.valueOf(token.value));
                 try {
                     if ((token.sym != TokenConstants.ERROR.ordinal())){
@@ -245,8 +245,8 @@ public class App extends Component {
                     token = new Symbol(TokenConstants.ERROR.ordinal(), "");
                 }
             }
-            lexer = new Lexico(reader);
-            parser sintactico = new parser(lexer);
+            //lexer = new Lexico(reader);
+            //parser sintactico = new parser(lexer);
             //sintactico.debug_parse();
             reader.close();
             writer.close();
