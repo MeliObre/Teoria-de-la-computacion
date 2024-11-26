@@ -303,6 +303,7 @@ public class parser extends java_cup.runtime.lr_parser {
     private List<String> listaReglas = new ArrayList<String>();
     private ArrayList<String> listaTabla;
     private static String error;
+    private String tipoAct = "";
 
     public parser(Scanner s, ArrayList<String> tabla){
         super(s);
@@ -325,6 +326,27 @@ public class parser extends java_cup.runtime.lr_parser {
                 listaTabla.add(i + 2,tipo);
             }
         }
+    }
+
+    public void compararTipo(String id, String t){
+        String tipoAsig = "";
+        //String tipoActual = sym.terminalNames[s.sym];
+        if (t.equals("CTE_ENT") | t.equals("CTE_BIN")){
+            tipoAsig = "INT";
+        }else if(t.equals("CTE_REA")){
+            tipoAsig = "FLOAT";
+        }else if(t.equals("CTE_STR")){
+            tipoAsig = "STRING";
+        }//falta caso id
+        for (int i = 0;i < listaTabla.size();i = i + 5){
+            if (listaTabla.get(i).equals(id)){
+                if (!listaTabla.get(i + 2).equals(tipoAsig)){
+                    //this.error = ("Error El tipo " + tipoAsig + " en la asignacion no es compatible. "+ id + " es de tipo " + listaTabla.get(i + 2) + ". ");
+                    this.report_error("Error El tipo " + tipoAsig + " en la asignacion no es compatible. "+ id + " es de tipo " + listaTabla.get(i + 2) + ". ", null);
+                }
+            }
+        }
+        tipoAct = "";
     }
     public List<String> getList() {
             return this.listaReglas;
@@ -733,7 +755,13 @@ class CUP$parser$actions {
           case 37: // expresion ::= expresion OP_SUM termino 
             {
               Object RESULT =null;
-		listaReglas.add("[Regla 34] --> E+T"); 
+		int eleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).left;
+		int eright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).right;
+		Object e = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-2)).value;
+		int tleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
+		int tright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
+		Object t = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
+		listaReglas.add("[Regla 34] --> E+T"); RESULT = e; RESULT = t; 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("expresion",17, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -742,7 +770,13 @@ class CUP$parser$actions {
           case 38: // expresion ::= expresion OP_RES termino 
             {
               Object RESULT =null;
-		listaReglas.add("[Regla 35] --> E-T"); 
+		int eleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).left;
+		int eright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).right;
+		Object e = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-2)).value;
+		int tleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
+		int tright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
+		Object t = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
+		listaReglas.add("[Regla 35] --> E-T"); RESULT = e; RESULT = t; 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("expresion",17, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -751,7 +785,10 @@ class CUP$parser$actions {
           case 39: // expresion ::= termino 
             {
               Object RESULT =null;
-		listaReglas.add("[Regla 36] --> T"); 
+		int tleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
+		int tright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
+		Object t = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
+		listaReglas.add("[Regla 36] --> T"); RESULT = t; 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("expresion",17, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -760,7 +797,13 @@ class CUP$parser$actions {
           case 40: // termino ::= termino OP_MUL factor 
             {
               Object RESULT =null;
-		listaReglas.add("[Regla 37] --> T*F"); 
+		int tleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).left;
+		int tright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).right;
+		Object t = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-2)).value;
+		int fleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
+		int fright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
+		Object f = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
+		listaReglas.add("[Regla 37] --> T*F"); RESULT = t; RESULT = f;
               CUP$parser$result = parser.getSymbolFactory().newSymbol("termino",18, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -769,7 +812,13 @@ class CUP$parser$actions {
           case 41: // termino ::= termino OP_DIV factor 
             {
               Object RESULT =null;
-		listaReglas.add("[Regla 38] --> T/F"); 
+		int tleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).left;
+		int tright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).right;
+		Object t = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-2)).value;
+		int fleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
+		int fright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
+		Object f = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
+		listaReglas.add("[Regla 38] --> T/F"); RESULT = t; RESULT = f;
               CUP$parser$result = parser.getSymbolFactory().newSymbol("termino",18, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -781,7 +830,7 @@ class CUP$parser$actions {
 		int fleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
 		int fright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		Object f = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
-		listaReglas.add("[Regla 39] --> F valor = " + f); 
+		listaReglas.add("[Regla 39] --> F valor = " + f); RESULT = f;
               CUP$parser$result = parser.getSymbolFactory().newSymbol("termino",18, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -793,7 +842,7 @@ class CUP$parser$actions {
 		int idleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
 		int idright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		Object id = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
-		listaReglas.add("[Regla 40] --> Identificador = " + id); 
+		listaReglas.add("[Regla 40] --> Identificador = " + id); RESULT = id;
               CUP$parser$result = parser.getSymbolFactory().newSymbol("ident",22, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -805,7 +854,7 @@ class CUP$parser$actions {
 		int entleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
 		int entright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		Object ent = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
-		listaReglas.add("[Regla 41] --> Constante entera = " + ent); 
+		listaReglas.add("[Regla 41] --> Constante entera = " + ent); RESULT = ent; tipoAct = "CTE_ENT";
               CUP$parser$result = parser.getSymbolFactory().newSymbol("cte",21, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -817,7 +866,7 @@ class CUP$parser$actions {
 		int realeft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
 		int rearight = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		Object rea = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
-		listaReglas.add("[Regla 42] --> Constante real = " + rea); 
+		listaReglas.add("[Regla 42] --> Constante real = " + rea); RESULT = rea;tipoAct = "CTE_REA";
               CUP$parser$result = parser.getSymbolFactory().newSymbol("cte",21, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -829,7 +878,7 @@ class CUP$parser$actions {
 		int binleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
 		int binright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		Object bin = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
-		listaReglas.add("[Regla 43] --> Constante binaria " + bin); 
+		listaReglas.add("[Regla 43] --> Constante binaria " + bin); RESULT = bin;tipoAct = "CTE_BIN";
               CUP$parser$result = parser.getSymbolFactory().newSymbol("cte",21, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -841,7 +890,7 @@ class CUP$parser$actions {
 		int strleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
 		int strright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		Object str = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
-		listaReglas.add("[Regla 44] --> Constante string " + str); 
+		listaReglas.add("[Regla 44] --> Constante string " + str); RESULT = str;tipoAct = "CTE_STR";
               CUP$parser$result = parser.getSymbolFactory().newSymbol("cte",21, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -850,7 +899,10 @@ class CUP$parser$actions {
           case 48: // factor ::= PAR_ABR expresion PAR_CIE 
             {
               Object RESULT =null;
-		listaReglas.add("[Regla 45] --> (expresión)"); 
+		int eleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
+		int eright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
+		Object e = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
+		listaReglas.add("[Regla 45] --> (expresión)"); RESULT = e; 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("factor",19, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -859,7 +911,10 @@ class CUP$parser$actions {
           case 49: // factor ::= ident 
             {
               Object RESULT =null;
-		listaReglas.add("[Regla 46] --> Identificador"); 
+		int idleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
+		int idright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
+		Object id = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
+		listaReglas.add("[Regla 46] --> Identificador"); RESULT = id;
               CUP$parser$result = parser.getSymbolFactory().newSymbol("factor",19, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -868,7 +923,10 @@ class CUP$parser$actions {
           case 50: // factor ::= cte 
             {
               Object RESULT =null;
-		listaReglas.add("[Regla 47] --> Constante"); 
+		int cleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
+		int cright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
+		Object c = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
+		listaReglas.add("[Regla 47] --> Constante"); RESULT = c;
               CUP$parser$result = parser.getSymbolFactory().newSymbol("factor",19, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -877,7 +935,10 @@ class CUP$parser$actions {
           case 51: // factor ::= percent 
             {
               Object RESULT =null;
-		listaReglas.add("[Regla 48] --> Funcion PERCENT"); 
+		int pleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
+		int pright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
+		Object p = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
+		listaReglas.add("[Regla 48] --> Funcion PERCENT"); RESULT = p; 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("factor",19, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -886,7 +947,13 @@ class CUP$parser$actions {
           case 52: // percent ::= PERCENT PAR_ABR expresion COMA expresion PAR_CIE 
             {
               Object RESULT =null;
-		listaReglas.add("[Regla 49] --> PERCENT(expresión,expresión)"); 
+		int e1left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-3)).left;
+		int e1right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-3)).right;
+		Object e1 = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-3)).value;
+		int e2left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
+		int e2right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
+		Object e2 = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
+		listaReglas.add("[Regla 49] --> PERCENT(expresión,expresión)"); RESULT = e1; RESULT = e2;
               CUP$parser$result = parser.getSymbolFactory().newSymbol("percent",20, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-5)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -895,7 +962,17 @@ class CUP$parser$actions {
           case 53: // asignacion ::= ID ASIG_VAR expresion 
             {
               Object RESULT =null;
-		listaReglas.add("[Regla 50] --> Asignación id ::= expresión"); 
+		int idleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).left;
+		int idright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).right;
+		Object id = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-2)).value;
+		int tleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
+		int tright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
+		Object t = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
+		listaReglas.add("[Regla 50] --> Asignación id ::= expresión [ID = " + id);
+                                            RESULT = id;
+                                            RESULT = t;
+                                            compararTipo((String) id,  tipoAct);
+ 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("asignacion",13, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
