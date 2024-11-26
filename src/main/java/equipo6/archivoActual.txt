@@ -1,6 +1,6 @@
     //*Codigo de prueba*//
 
-DECLARE.SECTION
+    DECLARE.SECTION
         [contador, a1, b1, real] := [INT, INT, INT, FLOAT]
         [cadena] := [STRING]
         [bin] := [INT]
@@ -36,6 +36,7 @@ PROGRAM.SECTION
 
     b1 ::= 30 - PERCENT(100+a1,2*contador)
 
-    a1 ::= a1 / b1
+    a1 ::= cadena
+
 
 ENDPROGRAM.SECTION

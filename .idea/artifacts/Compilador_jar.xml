@@ -1,6 +1,6 @@
 <component name="ArtifactManager">
-  <artifact type="jar" name="compiladorFlex:jar">
-    <output-path>$PROJECT_DIR$/out/artifacts/compiladorFlex_jar</output-path>
+  <artifact type="jar" name="Compilador:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/Compilador_jar</output-path>
     <root id="archive" name="compiladorFlex.jar">
       <element id="directory" name="META-INF">
         <element id="file-copy" path="$PROJECT_DIR$/out/META-INF/MANIFEST.MF" />

@@ -147,8 +147,6 @@ public class App extends Component {
                 ArrayList<String> reglas = (ArrayList<String>) sintactico.getList();
                 for (int i = 0; i < reglas.size(); i++) {
                     String regla = reglas.get(i);
-                    if (regla.contains("[Regla 11]")) {
-                    }
                     textAreaResult.append(regla + "\n"); //Salto de linea al final
                 }
                 sintactico.emptyList();

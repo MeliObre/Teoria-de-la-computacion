@@ -304,6 +304,9 @@ public class parser extends java_cup.runtime.lr_parser {
     private ArrayList<String> listaTabla;
     private static String error;
     private String tipoAct = "";
+    private boolean errorTipo = false;
+    private ArrayList<String> listaID = new ArrayList<>();
+    private ArrayList<String> listaTipo = new ArrayList<>();
 
     public parser(Scanner s, ArrayList<String> tabla){
         super(s);
@@ -313,17 +316,24 @@ public class parser extends java_cup.runtime.lr_parser {
     public void syntax_error(Symbol s){
         if (s.value != null){
             this.error = ("Error en la linea " + (s.right+1) + " columna " + s.left + ". "
-            + s + " no reconocido. Valor " + s.value );
-            }else {
-                this.error = ("");
-            }
+               + s + " no reconocido. Valor " + s.value );
+        }else if (errorTipo) {
+            errorTipo = false;
+        }else {
+            this.error = ("");
+        }
     }
 
-    public void insertarTipoID(String id, String tipo){
+
+    public void insertarTipoID(){
+    int k = 0;
         for (int i = 0;i < listaTabla.size();i = i + 5){
-            if (listaTabla.get(i).equals(id)){
-                listaTabla.remove(i + 2);
-                listaTabla.add(i + 2,tipo);
+            for (int j = listaID.size() - 1; j >= 0 ;j--){
+                if (listaTabla.get(i).equals(listaID.get(j))){
+                    listaTabla.remove(i + 2);
+                    listaTabla.add(i + 2,listaTipo.get(k));
+                    k++;
+                }
             }
         }
     }
@@ -337,17 +347,32 @@ public class parser extends java_cup.runtime.lr_parser {
             tipoAsig = "FLOAT";
         }else if(t.equals("CTE_STR")){
             tipoAsig = "STRING";
-        }//falta caso id
+        }else{
+            tipoAsig = t;
+        }
         for (int i = 0;i < listaTabla.size();i = i + 5){
             if (listaTabla.get(i).equals(id)){
                 if (!listaTabla.get(i + 2).equals(tipoAsig)){
-                    //this.error = ("Error El tipo " + tipoAsig + " en la asignacion no es compatible. "+ id + " es de tipo " + listaTabla.get(i + 2) + ". ");
-                    this.report_error("Error El tipo " + tipoAsig + " en la asignacion no es compatible. "+ id + " es de tipo " + listaTabla.get(i + 2) + ". ", null);
+                    errorTipo = true;
+                    this.error = ("Error "+ id + " es de tipo " + listaTabla.get(i + 2) + ". El tipo no es compatible con " + tipoAsig + ". ");
+                    this.syntax_error(null);
+                    //this.report_error("Error El tipo " + tipoAsig + " en la asignacion no es compatible. "+ id + " es de tipo " + listaTabla.get(i + 2) + ". ", null);
                 }
             }
         }
         tipoAct = "";
     }
+
+    public String buscarTipo(String id){
+        String tipo = "";
+        for (int i = 0;i < listaTabla.size();i = i + 5){
+                    if (listaTabla.get(i).equals(id)){
+                        tipo = (String) listaTabla.get(i + 2);
+                    }
+        }
+        return tipo;
+    }
+
     public List<String> getList() {
             return this.listaReglas;
     }
@@ -487,7 +512,7 @@ class CUP$parser$actions {
           case 10: // asignacion_tipos ::= COR_ABR lista COR_CIE 
             {
               Object RESULT =null;
-		listaReglas.add("[Regla 9] --> [ lista ]");  
+		listaReglas.add("[Regla 9] --> [ lista ]"); insertarTipoID(); 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("asignacion_tipos",7, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -504,7 +529,8 @@ class CUP$parser$actions {
 		Object t = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		 listaReglas.add("[Regla 10] --> id, lista ,tipo   ID = " + id);
                                             RESULT = id;
-                                            insertarTipoID((String)id, (String) t);
+                                            listaID.add((String)id);
+                                            listaTipo.add((String)t);
               CUP$parser$result = parser.getSymbolFactory().newSymbol("lista",6, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-4)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -521,7 +547,8 @@ class CUP$parser$actions {
 		Object t = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		listaReglas.add("[Regla 11] --> id] := [tipo    ID = " + id);
                                                 RESULT = id;
-                                                insertarTipoID((String) id, (String) t);
+                                                listaID.add((String)id);
+                                                listaTipo.add((String)t);
               CUP$parser$result = parser.getSymbolFactory().newSymbol("lista",6, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-4)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -842,7 +869,7 @@ class CUP$parser$actions {
 		int idleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
 		int idright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		Object id = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
-		listaReglas.add("[Regla 40] --> Identificador = " + id); RESULT = id;
+		listaReglas.add("[Regla 40] --> Identificador = " + id); RESULT = id;tipoAct = buscarTipo((String) id);
               CUP$parser$result = parser.getSymbolFactory().newSymbol("ident",22, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;

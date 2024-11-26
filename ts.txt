@@ -1,8 +1,8 @@
 NOMBRE TOKEN TIPO VALOR LONGITUD
-contador ID FLOAT - -
+contador ID INT - -
 a1 ID INT - -
 b1 ID INT - -
-real ID INT - -
+real ID FLOAT - -
 cadena ID STRING - -
 bin ID INT - -
 _0 CTE_ENT - 0 -
